@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4eN-v2-TZT">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="Moc-PF-R7m">
+            <objects>
+                <navigationController id="4eN-v2-TZT" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iNe-Tz-Qld">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="1ZT-ir-t6a" kind="relationship" relationship="rootViewController" id="dIv-Do-X1S"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WPo-fC-vcz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1074" y="83"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="GBq-hd-3SI">
+            <objects>
+                <viewController id="1ZT-ir-t6a" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Dnd-tj-AQo"/>
+                        <viewControllerLayoutGuide type="bottom" id="GQb-J1-aeX"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Mrr-n9-dCM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Nee-yr-mD9">
+                                <rect key="frame" x="0.0" y="44" width="375" height="623"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zog-sU-fqD">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="311.5"/>
+                                        <state key="normal" title="Focus Square"/>
+                                        <connections>
+                                            <segue destination="LXn-H7-hMe" kind="show" id="hhc-Hz-iJ3"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Je8-ss-6ut">
+                                        <rect key="frame" x="0.0" y="311.5" width="375" height="311.5"/>
+                                        <state key="normal" title="Focus Plane"/>
+                                        <connections>
+                                            <segue destination="JAA-tF-Dbd" kind="show" id="r7M-gd-ZGL"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Je8-ss-6ut" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="4Sv-os-K8P"/>
+                                    <constraint firstItem="zog-sU-fqD" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="Iby-kI-xFW"/>
+                                    <constraint firstAttribute="trailing" secondItem="Je8-ss-6ut" secondAttribute="trailing" id="cGs-Zp-cCw"/>
+                                    <constraint firstItem="zog-sU-fqD" firstAttribute="height" secondItem="Nee-yr-mD9" secondAttribute="height" multiplier="0.5" id="qha-15-QKn"/>
+                                    <constraint firstAttribute="trailing" secondItem="zog-sU-fqD" secondAttribute="trailing" id="stX-z9-nes"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="GQb-J1-aeX" firstAttribute="top" secondItem="Nee-yr-mD9" secondAttribute="bottom" id="GeZ-re-oqn"/>
+                            <constraint firstItem="Nee-yr-mD9" firstAttribute="top" secondItem="Dnd-tj-AQo" secondAttribute="bottom" id="ICw-Ka-ww7"/>
+                            <constraint firstAttribute="trailing" secondItem="Nee-yr-mD9" secondAttribute="trailing" id="Rir-He-Ygc"/>
+                            <constraint firstItem="Nee-yr-mD9" firstAttribute="leading" secondItem="Mrr-n9-dCM" secondAttribute="leading" id="T4u-z2-Hht"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="0wQ-EM-jQC"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GWz-qI-64K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-177" y="82"/>
+        </scene>
+        <!--Focus Plane View Controller-->
+        <scene sceneID="51B-yk-dX0">
+            <objects>
+                <viewController id="JAA-tF-Dbd" customClass="FocusPlaneViewController" customModule="ARFocusFrame_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sKa-Tb-Fwc"/>
+                        <viewControllerLayoutGuide type="bottom" id="qwg-gf-dJF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6S7-Rl-AIG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="ndX-yJ-iU4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ajM-tf-vEy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="758" y="519"/>
+        </scene>
+        <!--Focus Square View Controller-->
+        <scene sceneID="yoc-ej-xd1">
+            <objects>
+                <viewController id="LXn-H7-hMe" customClass="FocusSquareViewController" customModule="ARFocusFrame_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Lzn-0d-fSU"/>
+                        <viewControllerLayoutGuide type="bottom" id="NlS-hr-C6U"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="7vN-GR-7ZU">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="mD4-gv-Peh"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uE2-vT-OEy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="758" y="-224"/>
+        </scene>
+    </scenes>
+</document>

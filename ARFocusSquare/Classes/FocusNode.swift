@@ -15,8 +15,8 @@ internal extension ARSCNView {
 		return CGPoint(x: bounds.midX, y: bounds.midY)
 	}
 
-    func getEstimatedPlanes(for alignment: ARRaycastQuery.TargetAlignment = .any) -> [ARRaycastResult]? {
-        if let query = raycastQuery(from: screenCenter, allowing: .estimatedPlane, alignment: alignment) {
+    func getEstimatedPlanes(from point: CGPoint, for alignment: ARRaycastQuery.TargetAlignment = .any) -> [ARRaycastResult]? {
+        if let query = raycastQuery(from: point, allowing: .estimatedPlane, alignment: alignment) {
             return session.raycast(query)
         }
         return nil
@@ -296,23 +296,41 @@ open class FocusNode: SCNNode {
 	}
 
     // MARK: Public methods
-	public func updateFocusNode() {
-		guard let view = self.sceneView else {
-			return
-		}
-        let queue = updateQueue ?? DispatchQueue.main
-        queue.async {
+    /** Update the state of the FocusNode depending on the detection of planes
+    - Parameters:
+     - point: coordinates of the point on the screen at which to estimate the planes
+    */
+    public func updateFocusNode(from point: CGPoint? = nil) {
+        guard let view = self.sceneView else {
+            return
+        }
+        if point == nil, !Thread.isMainThread {
+            DispatchQueue.main.async {
+                self.updateFocusNode()
+            }
+            return
+        }
+        func updateNode(_ view: ARSCNView, _ point: CGPoint) {
             // Perform hit testing only when ARKit tracking is in a good state.
             if let camera = view.session.currentFrame?.camera,
-                  case .normal = camera.trackingState,
-                  let result = view.getEstimatedPlanes()?.first {
-                    self.detectionState = .detecting(raycastResult: result, camera: camera)
-                    view.scene.rootNode.addChildNode(self)
-                return
+               case .normal = camera.trackingState,
+               let result = view.getEstimatedPlanes(from: point)?.first {
+                self.detectionState = .detecting(raycastResult: result, camera: camera)
+                view.scene.rootNode.addChildNode(self)
             }
             else {
                 self.detectionState = .initializing
                 view.pointOfView?.addChildNode(self)
+            }
+        }
+        let screenPoint = point ?? view.screenCenter
+        if (updateQueue == nil && Thread.isMainThread) {
+            updateNode(view, screenPoint)
+        }
+        else {
+            let queue = updateQueue ?? DispatchQueue.main
+            queue.async {
+                updateNode(view, screenPoint)
             }
         }
 	}

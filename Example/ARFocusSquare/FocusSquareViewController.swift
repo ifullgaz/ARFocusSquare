@@ -15,6 +15,9 @@ class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeD
 
     let focusNode = FocusSquare()
 
+    /// A serial queue used to coordinate adding or removing nodes from the scene.
+    lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,6 +30,7 @@ class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeD
 
         self.focusNode.sceneView = sceneView
         self.focusNode.delegate = self
+        self.focusNode.updateQueue = updateQueue
         sceneView.scene.rootNode.addChildNode(focusNode)
     }
 

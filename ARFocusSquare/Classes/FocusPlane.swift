@@ -44,7 +44,7 @@ public class FocusPlane: FocusNode {
     /// Set up the focus square with just the size as a parameter
 	///
 	/// - Parameter size: Size in m of the square. Default is 0.17
-	public override init() {
+	required public init() {
 		super.init()
 		self.positioningNode.addChildNode(fillPlane)
         self.positioningNode.eulerAngles.x = .pi / 2 // Horizontal

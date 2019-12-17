@@ -47,10 +47,20 @@ internal extension float4x4 {
 }
 
 public protocol FocusNodeDelegate {
+    var focusNode: FocusNode? { get set }
+
+    func setupFocusNode(ofType type: FocusNode.Type, in view: ARSCNView) -> FocusNode
     func focusNode(_ node: FocusNode, changedDisplayState state: FocusNode.DisplayState)
 }
 
 public extension FocusNodeDelegate {
+    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode {
+        let focusNode: FocusNode = type.init()
+        focusNode.sceneView = sceneView
+        focusNode.delegate = self
+        sceneView.scene.rootNode.addChildNode(focusNode)
+        return focusNode
+    }
     func focusNode(_ node: FocusNode, changedDisplayState state: FocusNode.DisplayState) {}
 }
 
@@ -130,7 +140,7 @@ open class FocusNode: SCNNode {
     }
 
     // MARK: - Initialization
-	public override init() {
+	required public override init() {
 		super.init()
 
 		// Always render focus square on top of other content.

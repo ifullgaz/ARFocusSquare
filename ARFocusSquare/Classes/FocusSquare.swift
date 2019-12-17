@@ -241,7 +241,7 @@ public class FocusSquare: FocusNode {
     }()
 	// MARK: - Initialization
 
-	public override init() {
+	required public init() {
 		super.init()
 
         /*

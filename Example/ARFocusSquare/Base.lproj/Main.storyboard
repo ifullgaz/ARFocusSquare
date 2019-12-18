@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4eN-v2-TZT">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -35,30 +34,56 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Nee-yr-mD9">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Nee-yr-mD9">
                                 <rect key="frame" x="0.0" y="44" width="375" height="623"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zog-sU-fqD">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="311.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="124.5"/>
                                         <state key="normal" title="Focus Square"/>
                                         <connections>
                                             <segue destination="LXn-H7-hMe" kind="show" id="hhc-Hz-iJ3"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Je8-ss-6ut">
-                                        <rect key="frame" x="0.0" y="311.5" width="375" height="311.5"/>
+                                        <rect key="frame" x="0.0" y="124.5" width="375" height="124.5"/>
                                         <state key="normal" title="Focus Plane"/>
                                         <connections>
                                             <segue destination="JAA-tF-Dbd" kind="show" id="r7M-gd-ZGL"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qva-pI-m0m">
+                                        <rect key="frame" x="0.0" y="249" width="375" height="125"/>
+                                        <state key="normal" title="Focus Square IB"/>
+                                        <connections>
+                                            <segue destination="b6h-2I-0BO" kind="show" id="dXG-rc-Aao"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4K4-RU-Hn7">
+                                        <rect key="frame" x="0.0" y="374" width="375" height="124.5"/>
+                                        <state key="normal" title="Focus Plane IB"/>
+                                        <connections>
+                                            <segue destination="Eeu-46-QI8" kind="show" id="W2c-RR-oQ9"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iID-ZT-0YI" userLabel="Focus Pod IB">
+                                        <rect key="frame" x="0.0" y="498.5" width="375" height="124.5"/>
+                                        <state key="normal" title="Focus Plane IB"/>
+                                        <connections>
+                                            <segue destination="tyX-Le-5P9" kind="show" id="c2S-B3-k9e"/>
                                         </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="Je8-ss-6ut" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="4Sv-os-K8P"/>
                                     <constraint firstItem="zog-sU-fqD" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="Iby-kI-xFW"/>
+                                    <constraint firstAttribute="trailing" secondItem="4K4-RU-Hn7" secondAttribute="trailing" id="RLx-nW-LbA"/>
                                     <constraint firstAttribute="trailing" secondItem="Je8-ss-6ut" secondAttribute="trailing" id="cGs-Zp-cCw"/>
-                                    <constraint firstItem="zog-sU-fqD" firstAttribute="height" secondItem="Nee-yr-mD9" secondAttribute="height" multiplier="0.5" id="qha-15-QKn"/>
+                                    <constraint firstItem="Qva-pI-m0m" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="dvx-Uz-nvZ"/>
+                                    <constraint firstAttribute="trailing" secondItem="iID-ZT-0YI" secondAttribute="trailing" id="glP-rX-f8w"/>
+                                    <constraint firstItem="4K4-RU-Hn7" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="iQk-1z-31U"/>
+                                    <constraint firstAttribute="trailing" secondItem="Qva-pI-m0m" secondAttribute="trailing" id="poP-ht-Phl"/>
                                     <constraint firstAttribute="trailing" secondItem="zog-sU-fqD" secondAttribute="trailing" id="stX-z9-nes"/>
+                                    <constraint firstItem="iID-ZT-0YI" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="tZ8-yQ-3KC"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -79,7 +104,7 @@
         <!--Focus Plane View Controller-->
         <scene sceneID="51B-yk-dX0">
             <objects>
-                <viewController id="JAA-tF-Dbd" customClass="FocusPlaneViewController" customModule="ARFocusFrame_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="JAA-tF-Dbd" customClass="FocusPlaneViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sKa-Tb-Fwc"/>
                         <viewControllerLayoutGuide type="bottom" id="qwg-gf-dJF"/>
@@ -98,7 +123,7 @@
         <!--Focus Square View Controller-->
         <scene sceneID="yoc-ej-xd1">
             <objects>
-                <viewController id="LXn-H7-hMe" customClass="FocusSquareViewController" customModule="ARFocusFrame_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="LXn-H7-hMe" customClass="FocusSquareViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Lzn-0d-fSU"/>
                         <viewControllerLayoutGuide type="bottom" id="NlS-hr-C6U"/>
@@ -113,6 +138,135 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uE2-vT-OEy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="758" y="-224"/>
+        </scene>
+        <!--Delegate-->
+        <scene sceneID="nRg-Ni-1zr">
+            <objects>
+                <viewController id="Eeu-46-QI8" customClass="FocusPlaneViewControllerIB" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="bKL-lh-vN0"/>
+                        <viewControllerLayoutGuide type="bottom" id="Waf-tT-d3a"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ADg-Wp-vG2">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh7-ws-54Y">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Eeu-46-QI8" id="dvk-vM-U8b"/>
+                                </connections>
+                            </arscnView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="centerY" secondItem="ADg-Wp-vG2" secondAttribute="centerY" id="CHK-tw-Ctz"/>
+                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="height" secondItem="ADg-Wp-vG2" secondAttribute="height" id="UbG-9q-raR"/>
+                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="width" secondItem="ADg-Wp-vG2" secondAttribute="width" id="aSM-9t-jlV"/>
+                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="centerX" secondItem="ADg-Wp-vG2" secondAttribute="centerX" id="fKH-3c-AzV"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="jSC-Cc-doc"/>
+                    <connections>
+                        <outlet property="focusNode" destination="ZiQ-8X-kzd" id="kj8-aZ-DVJ"/>
+                        <outlet property="sceneView" destination="Zh7-ws-54Y" id="fQf-Ba-Dan"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eaW-oo-Bx5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="ZiQ-8X-kzd" customClass="FocusPlane" customModule="ARFocusSquare">
+                    <connections>
+                        <outlet property="delegate" destination="Eeu-46-QI8" id="Gcn-Vn-8dL"/>
+                        <outlet property="sceneView" destination="Zh7-ws-54Y" id="QY2-9N-QjK"/>
+                    </connections>
+                </customObject>
+            </objects>
+            <point key="canvasLocation" x="1583" y="519"/>
+        </scene>
+        <!--Delegate-->
+        <scene sceneID="NLE-6M-wCc">
+            <objects>
+                <viewController id="b6h-2I-0BO" customClass="FocusSquareViewControllerIB" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="JeE-me-21w"/>
+                        <viewControllerLayoutGuide type="bottom" id="IPC-SH-Abe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PTj-cd-OfW">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XlU-rD-cyF">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="delegate" destination="b6h-2I-0BO" id="kPZ-XQ-X0T"/>
+                                </connections>
+                            </arscnView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="XlU-rD-cyF" firstAttribute="centerY" secondItem="PTj-cd-OfW" secondAttribute="centerY" id="2PF-HN-13j"/>
+                            <constraint firstItem="XlU-rD-cyF" firstAttribute="centerX" secondItem="PTj-cd-OfW" secondAttribute="centerX" id="QQK-aQ-nHn"/>
+                            <constraint firstItem="XlU-rD-cyF" firstAttribute="width" secondItem="PTj-cd-OfW" secondAttribute="width" id="h3J-5F-kqM"/>
+                            <constraint firstItem="XlU-rD-cyF" firstAttribute="height" secondItem="PTj-cd-OfW" secondAttribute="height" id="hCL-n2-i4I"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="3bA-w4-f1L"/>
+                    <connections>
+                        <outlet property="focusNode" destination="kq1-kK-Vqv" id="bK3-0o-m1k"/>
+                        <outlet property="sceneView" destination="XlU-rD-cyF" id="f4L-1u-ubB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fsn-Wg-gfu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="kq1-kK-Vqv" customClass="FocusSquare" customModule="ARFocusSquare">
+                    <connections>
+                        <outlet property="delegate" destination="b6h-2I-0BO" id="rSv-T1-txD"/>
+                        <outlet property="sceneView" destination="XlU-rD-cyF" id="y2N-c7-mYf"/>
+                    </connections>
+                </customObject>
+            </objects>
+            <point key="canvasLocation" x="1583" y="-224"/>
+        </scene>
+        <!--Delegate-->
+        <scene sceneID="eeW-Ui-Cht">
+            <objects>
+                <viewController id="tyX-Le-5P9" customClass="FocusSquareViewControllerIB" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="IfN-7h-oiM"/>
+                        <viewControllerLayoutGuide type="bottom" id="dJN-eT-AmK"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="99M-P8-l4V">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wlk-ec-7oN">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="delegate" destination="tyX-Le-5P9" id="F1D-c7-AOW"/>
+                                </connections>
+                            </arscnView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="width" secondItem="99M-P8-l4V" secondAttribute="width" id="3gy-ZR-t4b"/>
+                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="centerX" secondItem="99M-P8-l4V" secondAttribute="centerX" id="PeQ-EE-JSY"/>
+                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="height" secondItem="99M-P8-l4V" secondAttribute="height" id="pCD-PI-d7n"/>
+                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="centerY" secondItem="99M-P8-l4V" secondAttribute="centerY" id="w0h-vm-bQ1"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="6Kl-uc-wAf"/>
+                    <connections>
+                        <outlet property="focusNode" destination="olJ-Mt-AgF" id="ci8-1w-m40"/>
+                        <outlet property="sceneView" destination="Wlk-ec-7oN" id="gax-86-JIb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YWp-ug-Ai9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="olJ-Mt-AgF" customClass="FocusPod" customModule="ARFocusSquare_Example" customModuleProvider="target">
+                    <connections>
+                        <outlet property="delegate" destination="tyX-Le-5P9" id="dZo-95-qVA"/>
+                        <outlet property="sceneView" destination="Wlk-ec-7oN" id="Wqa-Hf-m9C"/>
+                    </connections>
+                </customObject>
+            </objects>
+            <point key="canvasLocation" x="758" y="1268"/>
         </scene>
     </scenes>
 </document>

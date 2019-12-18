@@ -11,7 +11,7 @@ import QuartzCore
 
 /// A simple example subclass of FocusNode which shows whether the plane is
 /// tracking on a known surface or estimating.
-public class FocusPlane: FocusNode {
+open class FocusPlane: FocusNode {
 
     /// Original size of the focus square in meters.
     static let size: Float = 0.17
@@ -41,29 +41,8 @@ public class FocusPlane: FocusNode {
         return node
     }()
 
-    /// Set up the focus square with just the size as a parameter
-	///
-	/// - Parameter size: Size in m of the square. Default is 0.17
-	required public init() {
-		super.init()
-		self.positioningNode.addChildNode(fillPlane)
-        self.positioningNode.eulerAngles.x = .pi / 2 // Horizontal
-        self.positioningNode.simdScale = SIMD3<Float>(repeating: FocusPlane.size)
-
-        // Always render focus square on top of other content.
-        self.displayOnTop(true)
-	}
-
-	required init?(coder aDecoder: NSCoder) {
-		fatalError("\(#function) has not been implemented")
-	}
-
-	// MARK: Animations
-
-	/// Called when either `onPlane`, `state` or both have changed.
-	///
-	/// - Parameter newPlane: If the cube is tracking a new surface for the first time
-    public override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
+    // MARK: Appearance
+    open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
         super.displayStateChanged(state, newPlane: newPlane)
         switch state {
             case .initializing, .billboard, .offPlane:
@@ -73,5 +52,13 @@ public class FocusPlane: FocusNode {
                 self.fillPlane.geometry?.firstMaterial?.diffuse.contents = FocusPlane.onColor
                 self.fillPlane.geometry?.firstMaterial?.emission.contents = FocusPlane.onColor
         }
+    }
+
+    // MARK: - Initialization
+    open override func initGeometry() {
+        super.initGeometry()
+        positioningNode.addChildNode(fillPlane)
+        positioningNode.eulerAngles.x = .pi / 2 // Horizontal
+        positioningNode.simdScale = SIMD3<Float>(repeating: FocusPlane.size)
     }
 }

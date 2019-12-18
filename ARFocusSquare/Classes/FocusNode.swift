@@ -46,11 +46,12 @@ internal extension float4x4 {
     }
 }
 
+//@objc
 public protocol FocusNodeDelegate: class {
     var focusNode: FocusNode? { get set }
 
-    func setupFocusNode(ofType type: FocusNode.Type, in view: ARSCNView) -> FocusNode
-    func focusNode(_ node: FocusNode, changedDisplayState state: FocusNode.DisplayState)
+    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode
+    func focusNodeChangedDisplayState(_ node: FocusNode)
 }
 
 public extension FocusNodeDelegate {
@@ -61,7 +62,7 @@ public extension FocusNodeDelegate {
         sceneView.scene.rootNode.addChildNode(focusNode)
         return focusNode
     }
-    func focusNode(_ node: FocusNode, changedDisplayState state: FocusNode.DisplayState) {}
+    func focusNodeChangedDisplayState(_ node: FocusNode) {}
 }
 
 /**
@@ -70,12 +71,14 @@ An `SCNNode` which is used to provide uses with visual cues about the status of 
 */
 open class FocusNode: SCNNode {
 
-	weak public var sceneView: ARSCNView?
+    @IBOutlet
+	public weak var sceneView: ARSCNView?
 
     public var updateQueue: DispatchQueue?
 
-    public weak var delegate: FocusNodeDelegate?
-    
+    @IBOutlet
+    public weak var delegate: AnyObject?
+
 	// MARK: - Types
     public enum DisplayState: Equatable {
         case initializing
@@ -109,7 +112,7 @@ open class FocusNode: SCNNode {
     /// A counter for managing orientation updates of the focus square.
     private var counterToNextOrientationUpdate: Int = 0
     
-    private var displayState: DisplayState = .initializing {
+    private(set) public var displayState: DisplayState = .initializing {
         didSet {
             guard displayState != oldValue else { return }
 
@@ -139,56 +142,7 @@ open class FocusNode: SCNNode {
         }
     }
 
-    // MARK: - Initialization
-	required public override init() {
-		super.init()
-
-		// Always render focus square on top of other content.
-		self.displayOnTop(true)
-        self.opacity = 1.0
-        
-		addChildNode(self.positioningNode)
-
-		// Start the focus square as a billboard.
-		self.displayAsBillboard()
-	}
-
-	required public init?(coder aDecoder: NSCoder) {
-		fatalError("\(#function) has not been implemented")
-	}
-
-	// MARK: Appearance
-
-    public func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-        if let delegate = delegate {
-            if (!Thread.isMainThread) {
-                DispatchQueue.main.async {
-                    delegate.focusNode(self, changedDisplayState: state)
-                }
-            }
-            else {
-                delegate.focusNode(self, changedDisplayState: state)
-            }
-        }
-        displayOnTop(true)
-    }
-    
-	/// Hides the focus square.
-	public func hide() {
-		guard action(forKey: "hide") == nil else { return }
-
-		displayOnTop(false)
-		runAction(.fadeOut(duration: 0.5), forKey: "hide")
-	}
-
-	/// Unhides the focus square.
-	public func unhide() {
-		guard action(forKey: "unhide") == nil else { return }
-
-		displayOnTop(true)
-		runAction(.fadeIn(duration: 0.5), forKey: "unhide")
-	}
-
+    // MARK: - Private methods
 	/// Displays the focus square parallel to the camera plane.
 	private func displayAsBillboard() {
 		simdTransform = matrix_identity_float4x4
@@ -205,9 +159,9 @@ open class FocusNode: SCNNode {
 
 	/// Called when a plane has been detected.
 	private func displayAsOnPlane(for raycastResult: ARRaycastResult, planeAnchor: ARPlaneAnchor, camera: ARCamera?) {
-		anchorsOfVisitedPlanes.insert(planeAnchor)
         self.setPosition(with: raycastResult, camera)
         displayState = .onPlane(newPlane: !anchorsOfVisitedPlanes.contains(planeAnchor))
+        anchorsOfVisitedPlanes.insert(planeAnchor)
 	}
 
     private func setPosition(with raycastResult: ARRaycastResult, _ camera: ARCamera?) {
@@ -216,8 +170,7 @@ open class FocusNode: SCNNode {
         updateTransform(for: raycastResult, camera: camera)
     }
 
-	// MARK: Helper Methods
-
+	// MARK: - Positioning and orientation
     // - Tag: Set3DOrientation
     private func updateOrientation(basedOn raycastResult: ARRaycastResult) {
         self.simdOrientation = raycastResult.worldTransform.orientation
@@ -271,7 +224,6 @@ open class FocusNode: SCNNode {
 
 	/**
 	Reduce visual size change with distance by scaling up when close and down when far away.
-
 	These adjustments result in a scale of 1.0x for a distance of 0.7 m or less
 	(estimated distance when looking at a table), and a scale of 1.2x
 	for a distance 1.5 m distance (estimated distance when looking at the floor).
@@ -287,29 +239,13 @@ open class FocusNode: SCNNode {
 		}
 	}
 
-	/// Sets the rendering order of the `positioningNode` to show on top or under other scene content.
-	public func displayOnTop(_ isOnTop: Bool) {
-		// Recursivley traverses the node's children to update the rendering order depending on the `isOnTop` parameter.
-		func updateRenderOrder(for node: SCNNode) {
-			node.renderingOrder = isOnTop ? 2 : 0
-
-			for material in node.geometry?.materials ?? [] {
-				material.readsFromDepthBuffer = !isOnTop
-			}
-
-			for child in node.childNodes {
-				updateRenderOrder(for: child)
-			}
-		}
-
-		updateRenderOrder(for: self.positioningNode)
-	}
-
-    // MARK: Public methods
-    /** Update the state of the FocusNode depending on the detection of planes
-    - Parameters:
-     - point: coordinates of the point on the screen at which to estimate the planes
-    */
+    // MARK: - Public methods
+    /// Update the state of the FocusNode depending on the detection of planes.
+    ///
+    /// This method shoould be called periodacally, typically from `renderer:updateAtTime:`
+    ///
+    /// - Parameters:
+    ///     - point: coordinates of the point on the screen at which to estimate the planes
     public func updateFocusNode(from point: CGPoint? = nil) {
         guard let view = self.sceneView else {
             return
@@ -343,5 +279,74 @@ open class FocusNode: SCNNode {
                 updateNode(view, screenPoint)
             }
         }
-	}
+    }
+    
+    /// Hides the focus square.
+    open func hide() {
+        guard action(forKey: "hide") == nil else { return }
+
+        displayOnTop(false)
+        runAction(.fadeOut(duration: 0.5), forKey: "hide")
+    }
+
+    /// Unhides the focus square.
+    open func unhide() {
+        guard action(forKey: "unhide") == nil else { return }
+
+        displayOnTop(true)
+        runAction(.fadeIn(duration: 0.5), forKey: "unhide")
+    }
+
+    /// Sets the rendering order of the `positioningNode` to show on top or under other scene content.
+    open func displayOnTop(_ isOnTop: Bool) {
+        // Recursivley traverses the node's children to update the rendering order depending on the `isOnTop` parameter.
+        func updateRenderOrder(for node: SCNNode) {
+            node.renderingOrder = isOnTop ? 2 : 0
+
+            for material in node.geometry?.materials ?? [] {
+                material.readsFromDepthBuffer = !isOnTop
+            }
+
+            for child in node.childNodes {
+                updateRenderOrder(for: child)
+            }
+        }
+
+        updateRenderOrder(for: self.positioningNode)
+    }
+
+    // MARK: Appearance
+    open func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
+        if let delegate = delegate as? FocusNodeDelegate {
+            if (!Thread.isMainThread) {
+                DispatchQueue.main.async {
+                    delegate.focusNodeChangedDisplayState(self)
+                }
+            }
+            else {
+                delegate.focusNodeChangedDisplayState(self)
+            }
+        }
+        displayOnTop(true)
+    }
+
+    // MARK: - Initialization
+    open func initGeometry() {
+        self.opacity = 1.0
+        addChildNode(self.positioningNode)
+        // Start the focus square as a billboard.
+        self.displayAsBillboard()
+        // Always render focus square on top of other content.
+        self.displayOnTop(true)
+    }
+    
+    required public override init() {
+        super.init()
+        initGeometry()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initGeometry()
+    }
 }

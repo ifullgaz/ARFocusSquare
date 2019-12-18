@@ -188,7 +188,7 @@ private extension FocusSquare {
 ///
 /// An `SCNNode` which is used to provide uses with visual cues about the status of ARKit world tracking.
 /// - Tag: FocusSquare
-public class FocusSquare: FocusNode {
+open class FocusSquare: FocusNode {
 
 	// MARK: - Configuration Properties
 
@@ -239,72 +239,6 @@ public class FocusSquare: FocusNode {
 
         return node
     }()
-	// MARK: - Initialization
-
-	required public init() {
-		super.init()
-
-        /*
-         The focus square consists of eight segments as follows, which can be individually animated.
-         
-             s1  s2
-             _   _
-         s3 |     | s4
-         
-         s5 |     | s6
-             -   -
-             s7  s8
-         */
-		let s1 = Segment(name: "s1", corner: .topLeft, alignment: .horizontal)
-		let s2 = Segment(name: "s2", corner: .topRight, alignment: .horizontal)
-		let s3 = Segment(name: "s3", corner: .topLeft, alignment: .vertical)
-		let s4 = Segment(name: "s4", corner: .topRight, alignment: .vertical)
-		let s5 = Segment(name: "s5", corner: .bottomLeft, alignment: .vertical)
-		let s6 = Segment(name: "s6", corner: .bottomRight, alignment: .vertical)
-		let s7 = Segment(name: "s7", corner: .bottomLeft, alignment: .horizontal)
-		let s8 = Segment(name: "s8", corner: .bottomRight, alignment: .horizontal)
-		segments = [s1, s2, s3, s4, s5, s6, s7, s8]
-
-		let sl: Float = 0.5  // segment length
-		let c: Float = FocusSquare.thickness / 2 // correction to align lines perfectly
-		s1.simdPosition += SIMD3<Float>(-(sl / 2 - c), -(sl - c), 0)
-		s2.simdPosition += SIMD3<Float>(sl / 2 - c, -(sl - c), 0)
-		s3.simdPosition += SIMD3<Float>(-sl, -sl / 2, 0)
-		s4.simdPosition += SIMD3<Float>(sl, -sl / 2, 0)
-		s5.simdPosition += SIMD3<Float>(-sl, sl / 2, 0)
-		s6.simdPosition += SIMD3<Float>(sl, sl / 2, 0)
-		s7.simdPosition += SIMD3<Float>(-(sl / 2 - c), sl - c, 0)
-		s8.simdPosition += SIMD3<Float>(sl / 2 - c, sl - c, 0)
-
-        for segment in segments {
-            self.positioningNode.addChildNode(segment)
-            segment.open()
-        }
-        self.positioningNode.addChildNode(fillPlane)
-        self.positioningNode.eulerAngles.x = .pi / 2 // Horizontal
-        self.positioningNode.simdScale = SIMD3<Float>(repeating: FocusSquare.size * FocusSquare.scaleForClosedSquare)
-
-		// Always render focus square on top of other content.
-		self.displayOnTop(true)
-	}
-
-	required init?(coder aDecoder: NSCoder) {
-		fatalError("\(#function) has not been implemented")
-	}
-
-	// MARK: Animations
-
-    public override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-        super.displayStateChanged(state, newPlane: newPlane)
-        switch state {
-        case .initializing, .billboard:
-                animateOffPlaneState()
-            case .offPlane:
-                animateOffPlaneState()
-            case .onPlane:
-                animateOnPlaneState(newPlane: newPlane)
-        }
-    }
 
 	private func animateOffPlaneState() {
 		// Open animation
@@ -378,4 +312,61 @@ public class FocusSquare: FocusNode {
 			}
 		}
 	}
+    
+    // MARK: Appearance
+    open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
+        super.displayStateChanged(state, newPlane: newPlane)
+        switch state {
+        case .initializing, .billboard:
+                animateOffPlaneState()
+            case .offPlane:
+                animateOffPlaneState()
+            case .onPlane:
+                animateOnPlaneState(newPlane: newPlane)
+        }
+    }
+
+    // MARK: - Initialization
+    open override func initGeometry() {
+        super.initGeometry()
+        /*
+         The focus square consists of eight segments as follows, which can be individually animated.
+         
+             s1  s2
+             _   _
+         s3 |     | s4
+         
+         s5 |     | s6
+             -   -
+             s7  s8
+         */
+        let s1 = Segment(name: "s1", corner: .topLeft, alignment: .horizontal)
+        let s2 = Segment(name: "s2", corner: .topRight, alignment: .horizontal)
+        let s3 = Segment(name: "s3", corner: .topLeft, alignment: .vertical)
+        let s4 = Segment(name: "s4", corner: .topRight, alignment: .vertical)
+        let s5 = Segment(name: "s5", corner: .bottomLeft, alignment: .vertical)
+        let s6 = Segment(name: "s6", corner: .bottomRight, alignment: .vertical)
+        let s7 = Segment(name: "s7", corner: .bottomLeft, alignment: .horizontal)
+        let s8 = Segment(name: "s8", corner: .bottomRight, alignment: .horizontal)
+        segments = [s1, s2, s3, s4, s5, s6, s7, s8]
+
+        let sl: Float = 0.5  // segment length
+        let c: Float = FocusSquare.thickness / 2 // correction to align lines perfectly
+        s1.simdPosition += SIMD3<Float>(-(sl / 2 - c), -(sl - c), 0)
+        s2.simdPosition += SIMD3<Float>(sl / 2 - c, -(sl - c), 0)
+        s3.simdPosition += SIMD3<Float>(-sl, -sl / 2, 0)
+        s4.simdPosition += SIMD3<Float>(sl, -sl / 2, 0)
+        s5.simdPosition += SIMD3<Float>(-sl, sl / 2, 0)
+        s6.simdPosition += SIMD3<Float>(sl, sl / 2, 0)
+        s7.simdPosition += SIMD3<Float>(-(sl / 2 - c), sl - c, 0)
+        s8.simdPosition += SIMD3<Float>(sl / 2 - c, sl - c, 0)
+
+        for segment in segments {
+            positioningNode.addChildNode(segment)
+            segment.open()
+        }
+        positioningNode.addChildNode(fillPlane)
+        positioningNode.eulerAngles.x = .pi / 2 // Horizontal
+        positioningNode.simdScale = SIMD3<Float>(repeating: FocusSquare.size * FocusSquare.scaleForClosedSquare)
+    }
 }

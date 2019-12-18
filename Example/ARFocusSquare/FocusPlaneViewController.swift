@@ -13,7 +13,7 @@ class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodeDe
     
     var sceneView = ARSCNView()
 
-    let focusNode = FocusPlane()
+    var focusNode: FocusNode?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +25,8 @@ class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodeDe
         sceneView.delegate = self
         sceneView.showsStatistics = true
 
-        self.focusNode.sceneView = sceneView
-        self.focusNode.delegate = self
-        sceneView.scene.rootNode.addChildNode(focusNode)
+        focusNode = setupFocusNode(ofType: FocusPlane.self, in: sceneView)
+        sceneView.scene.rootNode.addChildNode(focusNode!)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -43,7 +42,7 @@ class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodeDe
     }
 
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        self.focusNode.updateFocusNode()
+        focusNode!.updateFocusNode()
     }
     
     func focusNode(_ node: FocusNode, changedDisplayState state: FocusNode.DisplayState) {

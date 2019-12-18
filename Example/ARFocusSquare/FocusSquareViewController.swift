@@ -10,10 +10,9 @@ import ARKit
 import ARFocusSquare
 
 class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeDelegate {
-
     var sceneView = ARSCNView()
 
-    let focusNode = FocusSquare()
+    var focusNode: FocusNode?
 
     /// A serial queue used to coordinate adding or removing nodes from the scene.
     lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
@@ -28,10 +27,9 @@ class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeD
         sceneView.delegate = self
         sceneView.showsStatistics = true
 
-        self.focusNode.sceneView = sceneView
-        self.focusNode.delegate = self
-        self.focusNode.updateQueue = updateQueue
-        sceneView.scene.rootNode.addChildNode(focusNode)
+        focusNode = setupFocusNode(ofType: FocusSquare.self, in: sceneView)
+        focusNode!.updateQueue = updateQueue
+        sceneView.scene.rootNode.addChildNode(focusNode!)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,7 +45,7 @@ class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeD
     }
 
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        self.focusNode.updateFocusNode()
+        focusNode!.updateFocusNode()
     }
 
     func focusNode(_ node: FocusNode, changedDisplayState state: FocusNode.DisplayState) {

@@ -46,7 +46,7 @@ internal extension float4x4 {
     }
 }
 
-public protocol FocusNodeDelegate {
+public protocol FocusNodeDelegate: class {
     var focusNode: FocusNode? { get set }
 
     func setupFocusNode(ofType type: FocusNode.Type, in view: ARSCNView) -> FocusNode
@@ -74,7 +74,7 @@ open class FocusNode: SCNNode {
 
     public var updateQueue: DispatchQueue?
 
-    public var delegate: FocusNodeDelegate?
+    public weak var delegate: FocusNodeDelegate?
     
 	// MARK: - Types
     public enum DisplayState: Equatable {

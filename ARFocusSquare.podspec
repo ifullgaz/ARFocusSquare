@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ARFocusSquare'
-  s.version          = '1.0.3'
+  s.version          = '1.0.4'
   s.summary          = 'A reusable version of FocusSquare from Apple example.'
 
   s.description      = <<-DESC

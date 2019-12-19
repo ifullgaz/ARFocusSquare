@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ARFocusSquare'
-  s.version          = '2.1.0'
+  s.version          = '2.2.0'
   s.summary          = 'A reusable version of FocusSquare from Apple example.'
 
   s.description      = <<-DESC
@@ -29,4 +29,5 @@ It requires iOS 13.0 or higher and was tested with Swift 5.1
   s.swift_versions        = ['5.0', '5.1']
 
   s.source_files = 'ARFocusSquare/Classes/**/*'
+  s.dependency     'IFGExtensions', '~> 0.1.1'
 end

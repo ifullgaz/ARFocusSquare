@@ -201,10 +201,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ARFocusSquare_Example/Pods-ARFocusSquare_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/ARFocusSquare/ARFocusSquare.framework",
+				"${BUILT_PRODUCTS_DIR}/IFGExtensions/IFGExtensions.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ARFocusSquare.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IFGExtensions.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

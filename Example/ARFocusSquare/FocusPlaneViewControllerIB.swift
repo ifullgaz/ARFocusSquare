@@ -12,7 +12,7 @@ import ARFocusSquare
 class FocusPlaneViewControllerIB: UIViewController, ARSCNViewDelegate, FocusNodeDelegate {
     @IBOutlet weak var sceneView: ARSCNView!
         
-    @IBOutlet var focusNode: FocusNode?
+    @IBOutlet var focusNode: FocusNode!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class FocusPlaneViewControllerIB: UIViewController, ARSCNViewDelegate, FocusNode
     }
 
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        focusNode!.updateFocusNode()
+        focusNode.updateFocusNode()
     }
     
     func focusNodeChangedDisplayState(_ node: FocusNode) {

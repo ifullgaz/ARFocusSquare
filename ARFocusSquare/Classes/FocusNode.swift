@@ -48,8 +48,6 @@ internal extension float4x4 {
 
 //@objc
 public protocol FocusNodeDelegate: class {
-    var focusNode: FocusNode? { get set }
-
     func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode
     func focusNodeChangedDisplayState(_ node: FocusNode)
 }

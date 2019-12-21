@@ -26,19 +26,29 @@ internal extension ARSCNView {
 
 //@objc
 public protocol FocusNodeDelegate: class {
-    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode
     func focusNodeChangedDisplayState(_ node: FocusNode)
 }
 
 public extension FocusNodeDelegate {
-    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode {
-        let focusNode: FocusNode = type.init()
-        focusNode.sceneView = sceneView
-        focusNode.delegate = self
-        sceneView.scene.rootNode.addChildNode(focusNode)
-        return focusNode
-    }
     func focusNodeChangedDisplayState(_ node: FocusNode) {}
+}
+
+public protocol FocusNodePresenter: class {
+    var focusNode: FocusNode? { get set }
+
+    @discardableResult
+    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode
+}
+
+public extension FocusNodePresenter {
+    @discardableResult
+    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode {
+        focusNode = type.init()
+        focusNode!.sceneView = sceneView
+        focusNode!.delegate = self
+        sceneView.scene.rootNode.addChildNode(focusNode!)
+        return focusNode!
+    }
 }
 
 /**
@@ -47,21 +57,21 @@ An `SCNNode` which is used to provide uses with visual cues about the status of 
 */
 open class FocusNode: SCNNode {
 
-    @IBOutlet
-	public weak var sceneView: ARSCNView?
-
-    public var updateQueue: DispatchQueue?
-
-    @IBOutlet
-    public weak var delegate: AnyObject?
-
-	// MARK: - Types
+    // MARK: - Types
     public enum DisplayState: Equatable {
         case initializing
         case billboard
         case offPlane
         case onPlane(newPlane: Bool)
     }
+
+    @IBOutlet
+	public weak var sceneView: ARSCNView?
+
+    @IBOutlet
+    public weak var delegate: AnyObject?
+
+    public var updateQueue: DispatchQueue?
 
 	private enum DetectionState: Equatable {
 		case initializing

@@ -9,7 +9,7 @@
 import ARKit
 import ARFocusSquare
 
-class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeDelegate {
+class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeDelegate, FocusNodePresenter {
     var sceneView = ARSCNView()
 
     var focusNode: FocusNode?
@@ -24,7 +24,7 @@ class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeD
         sceneView.delegate = self
         sceneView.showsStatistics = true
 
-        focusNode = setupFocusNode(ofType: FocusSquare.self, in: sceneView)
+        setupFocusNode(ofType: FocusSquare.self, in: sceneView)
     }
 
     override func viewWillAppear(_ animated: Bool) {

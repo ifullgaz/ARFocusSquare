@@ -59,7 +59,7 @@ class FocusPod: FocusNode {
     static let scaleForOnPlane: Float = 0.8
 
     /// Duration of the open/close animation
-    static let animationDuration = 0.7
+    override open class var animationDuration: TimeInterval { 0.7 }
 
     static var baseColor = #colorLiteral(red: 0.3098039329, green: 0.2039215714, blue: 0.03921568766, alpha: 1)
 

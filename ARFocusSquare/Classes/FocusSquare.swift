@@ -205,7 +205,7 @@ open class FocusSquare: FocusNode {
 	static let sideLengthForOpenSegments: CGFloat = 0.2
 
 	/// Duration of the open/close animation
-	static let animationDuration = 0.7
+    override open class var animationDuration: TimeInterval { 0.7 }
 
 	static var primaryColor = #colorLiteral(red: 1, green: 0.8, blue: 0, alpha: 1)
 

@@ -152,7 +152,7 @@ open class FocusNode: SCNNode {
         case detecting(raycastResult: ARRaycastResult, camera: ARCamera?)
     }
 
-    static var animationDuration: TimeInterval = 0.35
+    open class var animationDuration: TimeInterval { 0.35 }
     
     @IBOutlet
 	public weak var sceneView: ARSCNView?

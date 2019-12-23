@@ -131,7 +131,52 @@
                     <view key="view" contentMode="scaleToFill" id="7vN-GR-7ZU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DkG-uB-XrM">
+                                <rect key="frame" x="14" y="561" width="51" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Hide"/>
+                                <connections>
+                                    <action selector="hideFocusNode:" destination="LXn-H7-hMe" eventType="touchUpInside" id="nk0-aM-2u5"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FgT-AI-4vJ">
+                                <rect key="frame" x="95" y="561" width="61" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Show"/>
+                                <connections>
+                                    <action selector="showFocusNode:" destination="LXn-H7-hMe" eventType="touchUpInside" id="MwL-n6-WMf"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uym-wT-zih">
+                                <rect key="frame" x="308" y="561" width="51" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Hide"/>
+                                <connections>
+                                    <action selector="hideFocusNodeAnimated:" destination="LXn-H7-hMe" eventType="touchUpInside" id="73Q-3r-sDa"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YQJ-Tp-qGb">
+                                <rect key="frame" x="217" y="561" width="61" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Show"/>
+                                <connections>
+                                    <action selector="showFocusNodeAnimated:" destination="LXn-H7-hMe" eventType="touchUpInside" id="Ndq-yF-epp"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="FgT-AI-4vJ" firstAttribute="leading" secondItem="DkG-uB-XrM" secondAttribute="trailing" constant="30" id="521-XF-W3K"/>
+                            <constraint firstItem="DkG-uB-XrM" firstAttribute="leading" secondItem="7vN-GR-7ZU" secondAttribute="leading" constant="14" id="OZV-qP-EBP"/>
+                            <constraint firstItem="YQJ-Tp-qGb" firstAttribute="centerY" secondItem="uym-wT-zih" secondAttribute="centerY" id="PKk-so-5lZ"/>
+                            <constraint firstItem="FgT-AI-4vJ" firstAttribute="centerY" secondItem="DkG-uB-XrM" secondAttribute="centerY" id="PhX-R1-mZZ"/>
+                            <constraint firstItem="NlS-hr-C6U" firstAttribute="top" secondItem="DkG-uB-XrM" secondAttribute="bottom" constant="64" id="VjL-pN-37O"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="FgT-AI-4vJ" secondAttribute="trailing" constant="20" symbolic="YES" id="e9l-1i-eDi"/>
+                            <constraint firstItem="NlS-hr-C6U" firstAttribute="top" secondItem="uym-wT-zih" secondAttribute="bottom" constant="64" id="rA3-LT-peV"/>
+                            <constraint firstItem="uym-wT-zih" firstAttribute="leading" secondItem="YQJ-Tp-qGb" secondAttribute="trailing" constant="30" id="rj8-c1-dQa"/>
+                            <constraint firstAttribute="trailing" secondItem="uym-wT-zih" secondAttribute="trailing" constant="16" id="z7Q-Hn-4Ed"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="mD4-gv-Peh"/>
                 </viewController>
@@ -243,11 +288,32 @@
                                     <outlet property="delegate" destination="tyX-Le-5P9" id="F1D-c7-AOW"/>
                                 </connections>
                             </arscnView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J3q-Pf-Emo">
+                                <rect key="frame" x="14" y="561" width="51" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Hide"/>
+                                <connections>
+                                    <action selector="hideFocusNode:" destination="tyX-Le-5P9" eventType="touchUpInside" id="Bru-91-A5d"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bbc-i3-qbj">
+                                <rect key="frame" x="107" y="561" width="61" height="42"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <state key="normal" title="Show"/>
+                                <connections>
+                                    <action selector="showFocusNode:" destination="tyX-Le-5P9" eventType="touchUpInside" id="iEY-AJ-rcu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="Wlk-ec-7oN" firstAttribute="width" secondItem="99M-P8-l4V" secondAttribute="width" id="3gy-ZR-t4b"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bbc-i3-qbj" secondAttribute="trailing" constant="20" symbolic="YES" id="CCM-Oe-5zL"/>
+                            <constraint firstItem="bbc-i3-qbj" firstAttribute="centerY" secondItem="J3q-Pf-Emo" secondAttribute="centerY" id="MBv-VX-Fnl"/>
                             <constraint firstItem="Wlk-ec-7oN" firstAttribute="centerX" secondItem="99M-P8-l4V" secondAttribute="centerX" id="PeQ-EE-JSY"/>
+                            <constraint firstItem="bbc-i3-qbj" firstAttribute="leading" secondItem="J3q-Pf-Emo" secondAttribute="trailing" constant="42" id="bHv-H8-Vp8"/>
+                            <constraint firstItem="dJN-eT-AmK" firstAttribute="top" secondItem="J3q-Pf-Emo" secondAttribute="bottom" constant="64" id="clK-iQ-4XV"/>
+                            <constraint firstItem="J3q-Pf-Emo" firstAttribute="leading" secondItem="99M-P8-l4V" secondAttribute="leading" constant="14" id="iz0-Sw-paB"/>
                             <constraint firstItem="Wlk-ec-7oN" firstAttribute="height" secondItem="99M-P8-l4V" secondAttribute="height" id="pCD-PI-d7n"/>
                             <constraint firstItem="Wlk-ec-7oN" firstAttribute="centerY" secondItem="99M-P8-l4V" secondAttribute="centerY" id="w0h-vm-bQ1"/>
                         </constraints>

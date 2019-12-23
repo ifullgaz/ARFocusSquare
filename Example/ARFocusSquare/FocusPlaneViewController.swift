@@ -9,7 +9,8 @@
 import ARKit
 import ARFocusSquare
 
-class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodeDelegate, FocusNodePresenter {
+class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodePresenter {
+
     var sceneView = ARSCNView()
 
     var focusNode: FocusNode?
@@ -17,9 +18,10 @@ class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodeDe
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.sceneView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         sceneView.frame = self.view.bounds
         self.view.addSubview(sceneView)
-        self.sceneView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.view.sendSubviewToBack(sceneView)
 
         sceneView.delegate = self
         sceneView.showsStatistics = true

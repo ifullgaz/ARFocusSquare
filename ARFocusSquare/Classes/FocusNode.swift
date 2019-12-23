@@ -24,18 +24,56 @@ internal extension ARSCNView {
     }
 }
 
-//@objc
+/// Methods you can implement to respond to a change of state of the focus node
+///
+/// Implement this protocol to work with a focus node and adapt the UI to the
+/// status of world tracking.
+///
+/// # Topics
+/// ---
+/// # Respond to state change
+/// ````
+/// func focusNodeChangedDisplayState(_ node: FocusNode)
+/// ````
 public protocol FocusNodeDelegate: class {
+    /// Provide information when the world tracking state changes
+    /// - parameters:
+    ///     - node: the focus node
+    ///
+    /// Implement this methiod to respond to changes to the world tracking state
     func focusNodeChangedDisplayState(_ node: FocusNode)
 }
 
 public extension FocusNodeDelegate {
+    /// - Tag: focusNodeChangedDisplay
     func focusNodeChangedDisplayState(_ node: FocusNode) {}
 }
 
-public protocol FocusNodePresenter: class {
+/// This protocol adopts the `FocusNodeDelegate` protocol.
+/// It defines a required instance variable and provides a default method
+/// to create and configure a focus node.
+///
+/// Adopt this protocol to work with a focus node
+///
+/// # Topics
+/// ---
+/// # Create a focus node
+/// ````
+/// @discardableResult
+/// func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode
+/// ````
+public protocol FocusNodePresenter: FocusNodeDelegate {
     var focusNode: FocusNode? { get set }
 
+    /// Default implementation of a method to create and configure a focus node
+    /// - parameters:
+    ///     - ofType: the focus node type (any subclass of FocusNode)
+    ///     - in: the ARSCNView with which to associate the focus node
+    /// - Returns:
+    ///     FocusNode: A focus node associated with and displayed by the view.
+    ///     The delegate of the focus node is the caller.
+    ///
+    /// Implement this methiod to respond to changes to the world tracking state
     @discardableResult
     func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode
 }
@@ -51,10 +89,54 @@ public extension FocusNodePresenter {
     }
 }
 
-/**
-An `SCNNode` which is used to provide uses with visual cues about the status of ARKit world tracking.
-- Tag: FocusSquare
-*/
+/// - Tag: FocusNode
+/// An `SCNNode` which is used to provide uses with visual cues about the status of ARKit world tracking.
+///
+/// # Topics
+/// ---
+/// # Create a focus node
+/// ````
+/// init()
+/// ````
+/// Creates a FocusNode object
+/// ````
+/// init?(coder aDecoder: NSCoder)
+/// ````
+/// Creates a FocusNode object from an archive
+///
+/// ---
+/// # Manage the visual apprearence of the node
+/// ````
+/// func initGeometry()
+/// ````
+/// Override in subclasses. Creates the visual geometry of the node.
+/// ````
+/// func set(hidden: Bool, animated: Bool)
+/// ````
+/// Show or hide the node with or without animation``
+///````
+/// func hide()
+/// ````
+/// Hide the focus node. Can be overriden in subclasses.
+/// ````
+/// func unhide()
+/// ````
+/// Show the focus node. Can be overriden in subclasses.
+/// ````
+/// func displayOnTop(_ isOnTop: Bool)
+/// ````
+/// Ensure that the focus node is displayed on top of all other geometry. Can be overriden in subclasses.
+///
+/// ---
+/// # Responding to world mapping state change
+/// ````
+/// func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false)
+/// ````
+/// Override in subclasses to respond to changes in world mapping state change
+/// ````
+/// func updateFocusNode(from point: CGPoint? = nil)
+/// ````
+/// Called by the session delegate to update the focus node with each new frame
 open class FocusNode: SCNNode {
 
     // MARK: - Types
@@ -65,6 +147,13 @@ open class FocusNode: SCNNode {
         case onPlane(newPlane: Bool)
     }
 
+    private enum DetectionState: Equatable {
+        case initializing
+        case detecting(raycastResult: ARRaycastResult, camera: ARCamera?)
+    }
+
+    static var animationDuration: TimeInterval = 0.35
+    
     @IBOutlet
 	public weak var sceneView: ARSCNView?
 
@@ -73,16 +162,25 @@ open class FocusNode: SCNNode {
 
     public var updateQueue: DispatchQueue?
 
-	private enum DetectionState: Equatable {
-		case initializing
-		case detecting(raycastResult: ARRaycastResult, camera: ARCamera?)
-	}
-
     /// The primary node that controls the position of other `FocusSquare` nodes.
     public let positioningNode = SCNNode()
 
-	// MARK: - Properties
+    override open var isHidden: Bool {
+        didSet {
+            guard isHidden != oldValue, !isChangingVisibility else { return }
+            switch isHidden {
+                case true:
+                    hide(animated: false)
+                default:
+                    unhide(animated: false)
+            }
+        }
+    }
 
+	// MARK: - Properties
+    /// Indicates if the square is currently changing its orientation when the camera is pointing downwards.
+    private var isChangingVisibility: Bool = false
+    
     /// Indicates if the square is currently changing its orientation when the camera is pointing downwards.
     private var isChangingOrientation: Bool = false
     
@@ -225,7 +323,44 @@ open class FocusNode: SCNNode {
 		}
 	}
 
+    /// Hides the focus square.
+    open func hide(animated: Bool) {
+        let duration = animated ? type(of: self).animationDuration : 0.0
+        guard action(forKey: "hide") == nil else { return }
+        self.isChangingVisibility = true
+        runAction(.fadeOut(duration: duration), forKey: "hide") {
+            self.displayOnTop(false)
+            self.isHidden = true
+            self.isChangingVisibility = false
+        }
+    }
+
+    /// Unhides the focus square.
+    open func unhide(animated: Bool) {
+        let duration = animated ? type(of: self).animationDuration : 0.0
+        guard action(forKey: "unhide") == nil else { return }
+        self.isChangingVisibility = true
+        displayOnTop(true)
+        self.isHidden = false
+        self.opacity = 0.0
+        runAction(.fadeIn(duration: duration), forKey: "unhide") {
+           self.isChangingVisibility = false
+       }
+    }
+
     // MARK: - Public methods
+    public func set(hidden: Bool, animated: Bool) {
+        guard hidden != isHidden, !isChangingVisibility else {
+            return
+        }
+        switch hidden {
+            case true:
+                hide(animated: animated)
+            default:
+                unhide(animated: animated)
+        }
+    }
+
     /// Update the state of the FocusNode depending on the detection of planes.
     ///
     /// This method shoould be called periodacally, typically from `renderer:updateAtTime:`
@@ -267,22 +402,6 @@ open class FocusNode: SCNNode {
         }
     }
     
-    /// Hides the focus square.
-    open func hide() {
-        guard action(forKey: "hide") == nil else { return }
-
-        displayOnTop(false)
-        runAction(.fadeOut(duration: 0.5), forKey: "hide")
-    }
-
-    /// Unhides the focus square.
-    open func unhide() {
-        guard action(forKey: "unhide") == nil else { return }
-
-        displayOnTop(true)
-        runAction(.fadeIn(duration: 0.5), forKey: "unhide")
-    }
-
     /// Sets the rendering order of the `positioningNode` to show on top or under other scene content.
     open func displayOnTop(_ isOnTop: Bool) {
         // Recursivley traverses the node's children to update the rendering order depending on the `isOnTop` parameter.

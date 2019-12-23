@@ -9,17 +9,35 @@
 import ARKit
 import ARFocusSquare
 
-class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodeDelegate, FocusNodePresenter {
+class FocusSquareViewController: UIViewController, ARSCNViewDelegate, FocusNodePresenter {
+
     var sceneView = ARSCNView()
 
     var focusNode: FocusNode?
 
+    @IBAction func showFocusNode(_ sender: Any) {
+        focusNode?.isHidden = false
+    }
+    
+    @IBAction func hideFocusNode(_ sender: Any) {
+        focusNode?.isHidden = true
+    }
+
+    @IBAction func showFocusNodeAnimated(_ sender: Any) {
+        focusNode?.set(hidden: false, animated: true)
+    }
+    
+    @IBAction func hideFocusNodeAnimated(_ sender: Any) {
+        focusNode?.set(hidden: true, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.sceneView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         sceneView.frame = self.view.bounds
         self.view.addSubview(sceneView)
-        self.sceneView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.view.sendSubviewToBack(sceneView)
 
         sceneView.delegate = self
         sceneView.showsStatistics = true

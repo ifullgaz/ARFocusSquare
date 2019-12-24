@@ -147,7 +147,7 @@ open class FocusNode: SCNNode {
         case onPlane(newPlane: Bool)
     }
 
-    private enum DetectionState: Equatable {
+    public enum DetectionState: Equatable {
         case initializing
         case detecting(raycastResult: ARRaycastResult, camera: ARCamera?)
     }
@@ -209,7 +209,7 @@ open class FocusNode: SCNNode {
         }
     }
 
-    private var detectionState: DetectionState = .initializing {
+    private(set) public var detectionState: DetectionState = .initializing {
         didSet {
             guard detectionState != oldValue else { return }
 

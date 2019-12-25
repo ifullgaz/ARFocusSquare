@@ -113,7 +113,7 @@ public extension FocusNodePresenter {
 /// ````
 /// func set(hidden: Bool, animated: Bool)
 /// ````
-/// Show or hide the node with or without animation``
+/// Show or hide the node with or without animation
 ///````
 /// func hide()
 /// ````
@@ -154,6 +154,7 @@ open class FocusNode: SCNNode {
 
     open class var animationDuration: TimeInterval { 0.35 }
     
+    // MARK: - Variables needed for operation
     @IBOutlet
 	public weak var sceneView: ARSCNView?
 
@@ -162,6 +163,7 @@ open class FocusNode: SCNNode {
 
     public var updateQueue: DispatchQueue?
 
+    // MARK: - Variables needed for operation
     /// The primary node that controls the position of other `FocusSquare` nodes.
     public let positioningNode = SCNNode()
 
@@ -369,6 +371,7 @@ open class FocusNode: SCNNode {
     ///     - point: coordinates of the point on the screen at which to estimate the planes
     public func updateFocusNode(from point: CGPoint? = nil) {
         guard let view = self.sceneView else {
+            self.detectionState = .initializing
             return
         }
         if point == nil, !Thread.isMainThread {

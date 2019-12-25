@@ -46,7 +46,7 @@ public protocol FocusNodeDelegate: class {
 
 public extension FocusNodeDelegate {
     /// - Tag: focusNodeChangedDisplay
-    func focusNodeChangedDisplayState(_ node: FocusNode) {}
+//    func focusNodeChangedDisplayState(_ node: FocusNode) {}
 }
 
 /// This protocol adopts the `FocusNodeDelegate` protocol.

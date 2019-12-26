@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		180F8F6923A5F8A9004BFF64 /* FocusSquareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180F8F6723A5F8A9004BFF64 /* FocusSquareViewController.swift */; };
 		180F8F6A23A5F8A9004BFF64 /* FocusPlaneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180F8F6823A5F8A9004BFF64 /* FocusPlaneViewController.swift */; };
+		1850452223B42CAA000EEF8B /* FocusArcDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1850452123B42CAA000EEF8B /* FocusArcDemoViewController.swift */; };
+		1850452423B45192000EEF8B /* FocusSquareDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1850452323B45192000EEF8B /* FocusSquareDemoViewController.swift */; };
 		186D59B523AA8BC3003E7AF2 /* FocusSquareViewControllerIB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186D59B323AA8BC3003E7AF2 /* FocusSquareViewControllerIB.swift */; };
 		186D59B623AA8BC3003E7AF2 /* FocusPlaneViewControllerIB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186D59B423AA8BC3003E7AF2 /* FocusPlaneViewControllerIB.swift */; };
 		186D59BA23AABAF6003E7AF2 /* FocusPod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186D59B923AABAF6003E7AF2 /* FocusPod.swift */; };
@@ -24,6 +26,8 @@
 		1226D2CA720FCEF7595459F9 /* Pods_ARFocusSquare_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARFocusSquare_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		180F8F6723A5F8A9004BFF64 /* FocusSquareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusSquareViewController.swift; sourceTree = "<group>"; };
 		180F8F6823A5F8A9004BFF64 /* FocusPlaneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusPlaneViewController.swift; sourceTree = "<group>"; };
+		1850452123B42CAA000EEF8B /* FocusArcDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusArcDemoViewController.swift; sourceTree = "<group>"; };
+		1850452323B45192000EEF8B /* FocusSquareDemoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusSquareDemoViewController.swift; sourceTree = "<group>"; };
 		186D59B323AA8BC3003E7AF2 /* FocusSquareViewControllerIB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusSquareViewControllerIB.swift; sourceTree = "<group>"; };
 		186D59B423AA8BC3003E7AF2 /* FocusPlaneViewControllerIB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FocusPlaneViewControllerIB.swift; sourceTree = "<group>"; };
 		186D59B923AABAF6003E7AF2 /* FocusPod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusPod.swift; sourceTree = "<group>"; };
@@ -78,6 +82,8 @@
 				180F8F6723A5F8A9004BFF64 /* FocusSquareViewController.swift */,
 				186D59B423AA8BC3003E7AF2 /* FocusPlaneViewControllerIB.swift */,
 				186D59B323AA8BC3003E7AF2 /* FocusSquareViewControllerIB.swift */,
+				1850452123B42CAA000EEF8B /* FocusArcDemoViewController.swift */,
+				1850452323B45192000EEF8B /* FocusSquareDemoViewController.swift */,
 				186D59B923AABAF6003E7AF2 /* FocusPod.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -244,6 +250,8 @@
 			files = (
 				180F8F6923A5F8A9004BFF64 /* FocusSquareViewController.swift in Sources */,
 				186D59B523AA8BC3003E7AF2 /* FocusSquareViewControllerIB.swift in Sources */,
+				1850452223B42CAA000EEF8B /* FocusArcDemoViewController.swift in Sources */,
+				1850452423B45192000EEF8B /* FocusSquareDemoViewController.swift in Sources */,
 				186D59BA23AABAF6003E7AF2 /* FocusPod.swift in Sources */,
 				180F8F6A23A5F8A9004BFF64 /* FocusPlaneViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

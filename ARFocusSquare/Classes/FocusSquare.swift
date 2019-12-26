@@ -363,7 +363,7 @@ open class FocusSquare: FocusNode {
 
         for segment in segments {
             positioningNode.addChildNode(segment)
-            segment.open()
+//            segment.open()
         }
         positioningNode.addChildNode(fillPlane)
         positioningNode.eulerAngles.x = .pi / 2 // Horizontal

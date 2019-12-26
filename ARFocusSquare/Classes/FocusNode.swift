@@ -426,35 +426,41 @@ open class FocusNode: SCNNode {
     // MARK: Appearance
     open func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
         if let delegate = delegate as? FocusNodeDelegate {
-            if (!Thread.isMainThread) {
-                DispatchQueue.main.async {
-                    delegate.focusNodeChangedDisplayState(self)
-                }
-            }
-            else {
+            DispatchQueue.main.async {
                 delegate.focusNodeChangedDisplayState(self)
             }
         }
         displayOnTop(true)
     }
 
+    private func initialize() {
+        self.initGeometry()
+        let queue = updateQueue ?? DispatchQueue.main
+        queue.async {
+            self.displayAsBillboard()
+            // Always render focus square on top of other content.
+            self.displayOnTop(true)
+        }
+    }
+    
     // MARK: - Initialization
     open func initGeometry() {
         self.opacity = 1.0
         addChildNode(self.positioningNode)
-        // Start the focus square as a billboard.
-        self.displayAsBillboard()
-        // Always render focus square on top of other content.
-        self.displayOnTop(true)
     }
     
     required public override init() {
         super.init()
-        initGeometry()
+        DispatchQueue.main.async {
+            self.initialize()
+        }
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initGeometry()
+        DispatchQueue.main.async {
+            self.initGeometry()
+            self.initialize()
+        }
     }
 }

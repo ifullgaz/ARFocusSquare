@@ -57,8 +57,7 @@ open class FocusPlane: FocusNode {
     // MARK: - Initialization
     open override func initGeometry() {
         super.initGeometry()
-        positioningNode.addChildNode(fillPlane)
-        positioningNode.eulerAngles.x = .pi / 2 // Horizontal
-        positioningNode.simdScale = SIMD3<Float>(repeating: FocusPlane.size)
+        self.addChildNode(fillPlane)
+        displaySize = FocusPlane.size
     }
 }

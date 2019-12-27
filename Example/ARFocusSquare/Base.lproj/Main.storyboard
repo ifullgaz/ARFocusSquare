@@ -20,7 +20,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WPo-fC-vcz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1074" y="83"/>
+            <point key="canvasLocation" x="668" y="423"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="GBq-hd-3SI">
@@ -38,52 +38,45 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="623"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zog-sU-fqD">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="89"/>
-                                        <state key="normal" title="Focus Square"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="104"/>
+                                        <state key="normal" title="Focus Arc"/>
                                         <connections>
-                                            <segue destination="LXn-H7-hMe" kind="show" id="hhc-Hz-iJ3"/>
+                                            <segue destination="WlO-mC-PcY" kind="show" id="2hc-He-mZ2"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Je8-ss-6ut">
-                                        <rect key="frame" x="0.0" y="89" width="375" height="89"/>
-                                        <state key="normal" title="Focus Plane"/>
+                                        <rect key="frame" x="0.0" y="104" width="375" height="103.5"/>
+                                        <state key="normal" title="Focus Arc AR"/>
                                         <connections>
-                                            <segue destination="JAA-tF-Dbd" kind="show" id="r7M-gd-ZGL"/>
+                                            <segue destination="2MR-zj-LlM" kind="show" id="WR2-jd-6Cu"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qva-pI-m0m">
-                                        <rect key="frame" x="0.0" y="178" width="375" height="89"/>
-                                        <state key="normal" title="Focus Square IB"/>
+                                        <rect key="frame" x="0.0" y="207.5" width="375" height="104"/>
+                                        <state key="normal" title="Focus Square"/>
                                         <connections>
-                                            <segue destination="b6h-2I-0BO" kind="show" id="dXG-rc-Aao"/>
+                                            <segue destination="gae-4L-jJZ" kind="show" id="jiU-Ok-0xi"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4K4-RU-Hn7">
-                                        <rect key="frame" x="0.0" y="267" width="375" height="89"/>
-                                        <state key="normal" title="Focus Plane IB"/>
+                                        <rect key="frame" x="0.0" y="311.5" width="375" height="104"/>
+                                        <state key="normal" title="Focus Square AR"/>
                                         <connections>
-                                            <segue destination="Eeu-46-QI8" kind="show" id="W2c-RR-oQ9"/>
+                                            <segue destination="sVw-9j-ieY" kind="show" id="tlz-9o-xco"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iID-ZT-0YI" userLabel="Focus Pod IB">
-                                        <rect key="frame" x="0.0" y="356" width="375" height="89"/>
-                                        <state key="normal" title="Focus Arc IB"/>
+                                        <rect key="frame" x="0.0" y="415.5" width="375" height="103.5"/>
+                                        <state key="normal" title="Focus Pod"/>
                                         <connections>
-                                            <segue destination="tyX-Le-5P9" kind="show" id="c2S-B3-k9e"/>
+                                            <segue destination="dkw-nk-5C9" kind="show" id="HeG-2P-T1g"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bb5-NR-dXi">
-                                        <rect key="frame" x="0.0" y="445" width="375" height="89"/>
-                                        <state key="normal" title="Focus Arc"/>
+                                        <rect key="frame" x="0.0" y="519" width="375" height="104"/>
+                                        <state key="normal" title="Focus Pod AR"/>
                                         <connections>
-                                            <segue destination="hoG-X5-y0B" kind="show" id="snR-L2-47O"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hhN-0b-CLy" userLabel="Focus Square">
-                                        <rect key="frame" x="0.0" y="534" width="375" height="89"/>
-                                        <state key="normal" title="Focus Square"/>
-                                        <connections>
-                                            <segue destination="hyf-BT-fxH" kind="show" id="2EQ-uM-xb4"/>
+                                            <segue destination="jhI-Dj-dPT" kind="show" id="xpH-7S-r9S"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -91,14 +84,12 @@
                                     <constraint firstItem="Je8-ss-6ut" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="4Sv-os-K8P"/>
                                     <constraint firstItem="zog-sU-fqD" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="Iby-kI-xFW"/>
                                     <constraint firstAttribute="trailing" secondItem="4K4-RU-Hn7" secondAttribute="trailing" id="RLx-nW-LbA"/>
-                                    <constraint firstItem="hhN-0b-CLy" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="WCF-iV-tfI"/>
                                     <constraint firstAttribute="trailing" secondItem="Je8-ss-6ut" secondAttribute="trailing" id="cGs-Zp-cCw"/>
                                     <constraint firstItem="Qva-pI-m0m" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="dvx-Uz-nvZ"/>
                                     <constraint firstAttribute="trailing" secondItem="iID-ZT-0YI" secondAttribute="trailing" id="glP-rX-f8w"/>
                                     <constraint firstItem="4K4-RU-Hn7" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="iQk-1z-31U"/>
                                     <constraint firstAttribute="trailing" secondItem="Qva-pI-m0m" secondAttribute="trailing" id="poP-ht-Phl"/>
                                     <constraint firstAttribute="trailing" secondItem="zog-sU-fqD" secondAttribute="trailing" id="stX-z9-nes"/>
-                                    <constraint firstAttribute="trailing" secondItem="hhN-0b-CLy" secondAttribute="trailing" id="t6K-Mx-4Fz"/>
                                     <constraint firstItem="iID-ZT-0YI" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="tZ8-yQ-3KC"/>
                                     <constraint firstAttribute="trailing" secondItem="Bb5-NR-dXi" secondAttribute="trailing" id="w6v-y3-wih"/>
                                     <constraint firstItem="Bb5-NR-dXi" firstAttribute="leading" secondItem="Nee-yr-mD9" secondAttribute="leading" id="xKq-Up-rNE"/>
@@ -117,300 +108,193 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GWz-qI-64K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-177" y="82"/>
+            <point key="canvasLocation" x="1620" y="423"/>
         </scene>
         <!--Focus Arc Demo View Controller-->
-        <scene sceneID="2pZ-UX-RA8">
+        <scene sceneID="PKk-6F-8Zg">
             <objects>
-                <viewController id="hoG-X5-y0B" customClass="FocusArcDemoViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="WlO-mC-PcY" customClass="FocusArcDemoViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="5Ve-tb-hAG"/>
-                        <viewControllerLayoutGuide type="bottom" id="9aw-yK-Dpc"/>
+                        <viewControllerLayoutGuide type="top" id="3Ys-it-veD"/>
+                        <viewControllerLayoutGuide type="bottom" id="pjA-f1-Hxc"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="5J8-He-gJg" customClass="SCNView">
+                    <view key="view" contentMode="scaleToFill" id="gfE-rl-g9j" customClass="SCNView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <connections>
-                            <outletCollection property="gestureRecognizers" destination="gzS-ox-4Yz" appends="YES" id="ogX-3q-q8T"/>
+                            <outletCollection property="gestureRecognizers" destination="Uto-ks-Ase" appends="YES" id="ea7-gV-64r"/>
                         </connections>
                     </view>
-                    <navigationItem key="navigationItem" id="KTf-Sj-JuP"/>
+                    <navigationItem key="navigationItem" id="6FA-UE-b8f"/>
                     <connections>
-                        <outlet property="sceneView" destination="5J8-He-gJg" id="k0K-Z7-3lZ"/>
+                        <outlet property="sceneView" destination="gfE-rl-g9j" id="9DN-y6-3k5"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="vfq-W5-T24" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="gzS-ox-4Yz">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZLj-ec-Xad" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Uto-ks-Ase">
                     <connections>
-                        <action selector="viewTapped:" destination="hoG-X5-y0B" id="Ind-Fd-J8S"/>
+                        <action selector="viewTapped:" destination="WlO-mC-PcY" id="xTU-QC-hVJ"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-142" y="1268"/>
+            <point key="canvasLocation" x="2839" y="-406"/>
+        </scene>
+        <!--Delegate-->
+        <scene sceneID="gb1-CE-W9a">
+            <objects>
+                <viewController id="2MR-zj-LlM" customClass="FocusArcViewControllerAR" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hvO-Jv-ROH"/>
+                        <viewControllerLayoutGuide type="bottom" id="UIt-dH-7d6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jdS-nA-aP7" customClass="ARSCNView">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <connections>
+                            <outlet property="delegate" destination="2MR-zj-LlM" id="2f4-Ti-wjU"/>
+                        </connections>
+                    </view>
+                    <navigationItem key="navigationItem" id="tCE-V5-IJa"/>
+                    <connections>
+                        <outlet property="focusNode" destination="clg-L5-ygf" id="F2v-dA-mW4"/>
+                        <outlet property="sceneView" destination="jdS-nA-aP7" id="x0I-aV-cfU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HsS-eP-YAO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="clg-L5-ygf" customClass="FocusArc" customModule="ARFocusSquare">
+                    <connections>
+                        <outlet property="delegate" destination="2MR-zj-LlM" id="90M-Cw-6JP"/>
+                        <outlet property="sceneView" destination="jdS-nA-aP7" id="asg-92-11x"/>
+                    </connections>
+                </customObject>
+            </objects>
+            <point key="canvasLocation" x="3737" y="-406"/>
         </scene>
         <!--Focus Square Demo View Controller-->
-        <scene sceneID="JN3-Zj-Xvn">
+        <scene sceneID="iV2-HD-MRK">
             <objects>
-                <viewController id="hyf-BT-fxH" customClass="FocusSquareDemoViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="gae-4L-jJZ" customClass="FocusSquareDemoViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="g6w-nU-62s"/>
-                        <viewControllerLayoutGuide type="bottom" id="qTa-QB-7rx"/>
+                        <viewControllerLayoutGuide type="top" id="ytp-yF-eZJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="C1c-vM-7k1"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="HbD-bc-pRs" customClass="SCNView">
+                    <view key="view" contentMode="scaleToFill" id="fhb-MN-8e8" customClass="SCNView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <connections>
-                            <outletCollection property="gestureRecognizers" destination="38a-FR-ja8" appends="YES" id="eNQ-eV-Cx5"/>
+                            <outletCollection property="gestureRecognizers" destination="f32-7a-q3m" appends="YES" id="UJj-Xm-TyG"/>
                         </connections>
                     </view>
-                    <navigationItem key="navigationItem" id="8mp-40-yll"/>
+                    <navigationItem key="navigationItem" id="fBZ-KH-hcz"/>
                     <connections>
-                        <outlet property="sceneView" destination="HbD-bc-pRs" id="x8k-xA-YnE"/>
+                        <outlet property="sceneView" destination="fhb-MN-8e8" id="ewZ-uM-nXY"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zWm-9r-bmh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="38a-FR-ja8">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oq9-iv-EwG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="f32-7a-q3m">
                     <connections>
-                        <action selector="viewTapped:" destination="hyf-BT-fxH" id="pfJ-z7-4eS"/>
+                        <action selector="viewTapped:" destination="gae-4L-jJZ" id="f4J-tX-tUA"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-945" y="1268"/>
-        </scene>
-        <!--Focus Plane View Controller-->
-        <scene sceneID="51B-yk-dX0">
-            <objects>
-                <viewController id="JAA-tF-Dbd" customClass="FocusPlaneViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="sKa-Tb-Fwc"/>
-                        <viewControllerLayoutGuide type="bottom" id="qwg-gf-dJF"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="6S7-Rl-AIG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="ndX-yJ-iU4"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ajM-tf-vEy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="758" y="519"/>
-        </scene>
-        <!--Focus Square View Controller-->
-        <scene sceneID="yoc-ej-xd1">
-            <objects>
-                <viewController id="LXn-H7-hMe" customClass="FocusSquareViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Lzn-0d-fSU"/>
-                        <viewControllerLayoutGuide type="bottom" id="NlS-hr-C6U"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="7vN-GR-7ZU">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DkG-uB-XrM">
-                                <rect key="frame" x="14" y="561" width="51" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Hide"/>
-                                <connections>
-                                    <action selector="hideFocusNode:" destination="LXn-H7-hMe" eventType="touchUpInside" id="nk0-aM-2u5"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FgT-AI-4vJ">
-                                <rect key="frame" x="95" y="561" width="61" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Show"/>
-                                <connections>
-                                    <action selector="showFocusNode:" destination="LXn-H7-hMe" eventType="touchUpInside" id="MwL-n6-WMf"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uym-wT-zih">
-                                <rect key="frame" x="308" y="561" width="51" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Hide"/>
-                                <connections>
-                                    <action selector="hideFocusNodeAnimated:" destination="LXn-H7-hMe" eventType="touchUpInside" id="73Q-3r-sDa"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YQJ-Tp-qGb">
-                                <rect key="frame" x="217" y="561" width="61" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Show"/>
-                                <connections>
-                                    <action selector="showFocusNodeAnimated:" destination="LXn-H7-hMe" eventType="touchUpInside" id="Ndq-yF-epp"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="FgT-AI-4vJ" firstAttribute="leading" secondItem="DkG-uB-XrM" secondAttribute="trailing" constant="30" id="521-XF-W3K"/>
-                            <constraint firstItem="DkG-uB-XrM" firstAttribute="leading" secondItem="7vN-GR-7ZU" secondAttribute="leading" constant="14" id="OZV-qP-EBP"/>
-                            <constraint firstItem="YQJ-Tp-qGb" firstAttribute="centerY" secondItem="uym-wT-zih" secondAttribute="centerY" id="PKk-so-5lZ"/>
-                            <constraint firstItem="FgT-AI-4vJ" firstAttribute="centerY" secondItem="DkG-uB-XrM" secondAttribute="centerY" id="PhX-R1-mZZ"/>
-                            <constraint firstItem="NlS-hr-C6U" firstAttribute="top" secondItem="DkG-uB-XrM" secondAttribute="bottom" constant="64" id="VjL-pN-37O"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="FgT-AI-4vJ" secondAttribute="trailing" constant="20" symbolic="YES" id="e9l-1i-eDi"/>
-                            <constraint firstItem="NlS-hr-C6U" firstAttribute="top" secondItem="uym-wT-zih" secondAttribute="bottom" constant="64" id="rA3-LT-peV"/>
-                            <constraint firstItem="uym-wT-zih" firstAttribute="leading" secondItem="YQJ-Tp-qGb" secondAttribute="trailing" constant="30" id="rj8-c1-dQa"/>
-                            <constraint firstAttribute="trailing" secondItem="uym-wT-zih" secondAttribute="trailing" constant="16" id="z7Q-Hn-4Ed"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="mD4-gv-Peh"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uE2-vT-OEy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="758" y="-224"/>
+            <point key="canvasLocation" x="2839" y="424"/>
         </scene>
         <!--Delegate-->
-        <scene sceneID="nRg-Ni-1zr">
+        <scene sceneID="SHM-5s-KVq">
             <objects>
-                <viewController id="Eeu-46-QI8" customClass="FocusPlaneViewControllerIB" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="sVw-9j-ieY" customClass="FocusSquareViewControllerAR" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="bKL-lh-vN0"/>
-                        <viewControllerLayoutGuide type="bottom" id="Waf-tT-d3a"/>
+                        <viewControllerLayoutGuide type="top" id="5lm-zL-yYM"/>
+                        <viewControllerLayoutGuide type="bottom" id="cW7-U6-JWa"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="ADg-Wp-vG2">
+                    <view key="view" contentMode="scaleToFill" id="B9G-Pa-oUY" customClass="ARSCNView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh7-ws-54Y">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <connections>
-                                    <outlet property="delegate" destination="Eeu-46-QI8" id="dvk-vM-U8b"/>
-                                </connections>
-                            </arscnView>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="centerY" secondItem="ADg-Wp-vG2" secondAttribute="centerY" id="CHK-tw-Ctz"/>
-                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="height" secondItem="ADg-Wp-vG2" secondAttribute="height" id="UbG-9q-raR"/>
-                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="width" secondItem="ADg-Wp-vG2" secondAttribute="width" id="aSM-9t-jlV"/>
-                            <constraint firstItem="Zh7-ws-54Y" firstAttribute="centerX" secondItem="ADg-Wp-vG2" secondAttribute="centerX" id="fKH-3c-AzV"/>
-                        </constraints>
+                        <connections>
+                            <outlet property="delegate" destination="sVw-9j-ieY" id="1vH-Yw-IL7"/>
+                        </connections>
                     </view>
-                    <navigationItem key="navigationItem" id="jSC-Cc-doc"/>
+                    <navigationItem key="navigationItem" id="KE3-bc-b6B"/>
                     <connections>
-                        <outlet property="focusNode" destination="ZiQ-8X-kzd" id="kj8-aZ-DVJ"/>
-                        <outlet property="sceneView" destination="Zh7-ws-54Y" id="fQf-Ba-Dan"/>
+                        <outlet property="focusNode" destination="AFm-t0-VF0" id="7JA-Kb-FFa"/>
+                        <outlet property="sceneView" destination="B9G-Pa-oUY" id="Fik-dE-FDy"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eaW-oo-Bx5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <customObject id="ZiQ-8X-kzd" customClass="FocusPlane" customModule="ARFocusSquare">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Tf-Fm-1Lv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="AFm-t0-VF0" customClass="FocusSquare" customModule="ARFocusSquare">
                     <connections>
-                        <outlet property="delegate" destination="Eeu-46-QI8" id="Gcn-Vn-8dL"/>
-                        <outlet property="sceneView" destination="Zh7-ws-54Y" id="QY2-9N-QjK"/>
+                        <outlet property="delegate" destination="sVw-9j-ieY" id="E0b-vn-GQK"/>
+                        <outlet property="sceneView" destination="B9G-Pa-oUY" id="WoB-OO-cfe"/>
                     </connections>
                 </customObject>
             </objects>
-            <point key="canvasLocation" x="1583" y="519"/>
+            <point key="canvasLocation" x="3738" y="424"/>
         </scene>
-        <!--Delegate-->
-        <scene sceneID="NLE-6M-wCc">
+        <!--Focus Pod Demo View Controller-->
+        <scene sceneID="aTG-x6-S7L">
             <objects>
-                <viewController id="b6h-2I-0BO" customClass="FocusSquareViewControllerIB" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="dkw-nk-5C9" customClass="FocusPodDemoViewController" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="JeE-me-21w"/>
-                        <viewControllerLayoutGuide type="bottom" id="IPC-SH-Abe"/>
+                        <viewControllerLayoutGuide type="top" id="2x8-Na-Oo7"/>
+                        <viewControllerLayoutGuide type="bottom" id="jXc-3j-CNS"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="PTj-cd-OfW">
+                    <view key="view" contentMode="scaleToFill" id="svQ-jl-1SR" customClass="SCNView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XlU-rD-cyF">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <connections>
-                                    <outlet property="delegate" destination="b6h-2I-0BO" id="kPZ-XQ-X0T"/>
-                                </connections>
-                            </arscnView>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="XlU-rD-cyF" firstAttribute="centerY" secondItem="PTj-cd-OfW" secondAttribute="centerY" id="2PF-HN-13j"/>
-                            <constraint firstItem="XlU-rD-cyF" firstAttribute="centerX" secondItem="PTj-cd-OfW" secondAttribute="centerX" id="QQK-aQ-nHn"/>
-                            <constraint firstItem="XlU-rD-cyF" firstAttribute="width" secondItem="PTj-cd-OfW" secondAttribute="width" id="h3J-5F-kqM"/>
-                            <constraint firstItem="XlU-rD-cyF" firstAttribute="height" secondItem="PTj-cd-OfW" secondAttribute="height" id="hCL-n2-i4I"/>
-                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="xsW-l4-gul" appends="YES" id="KBb-Lq-Vwu"/>
+                        </connections>
                     </view>
-                    <navigationItem key="navigationItem" id="3bA-w4-f1L"/>
+                    <navigationItem key="navigationItem" id="vWI-1y-Qz1"/>
                     <connections>
-                        <outlet property="focusNode" destination="kq1-kK-Vqv" id="bK3-0o-m1k"/>
-                        <outlet property="sceneView" destination="XlU-rD-cyF" id="f4L-1u-ubB"/>
+                        <outlet property="sceneView" destination="svQ-jl-1SR" id="XhJ-Jk-nRz"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Fsn-Wg-gfu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <customObject id="kq1-kK-Vqv" customClass="FocusSquare" customModule="ARFocusSquare">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zUE-VB-W6N" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="xsW-l4-gul">
                     <connections>
-                        <outlet property="delegate" destination="b6h-2I-0BO" id="rSv-T1-txD"/>
-                        <outlet property="sceneView" destination="XlU-rD-cyF" id="y2N-c7-mYf"/>
+                        <action selector="viewTapped:" destination="dkw-nk-5C9" id="2Po-cc-mXg"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="2838" y="1268"/>
+        </scene>
+        <!--Delegate-->
+        <scene sceneID="g16-hz-xqH">
+            <objects>
+                <viewController id="jhI-Dj-dPT" customClass="FocusPodViewControllerAR" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="XW5-1J-sh0"/>
+                        <viewControllerLayoutGuide type="bottom" id="T9x-L1-K5V"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0iS-q7-D93" customClass="ARSCNView">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <connections>
+                            <outlet property="delegate" destination="jhI-Dj-dPT" id="rJV-Ne-GqH"/>
+                        </connections>
+                    </view>
+                    <navigationItem key="navigationItem" id="H6Z-OB-Yz7"/>
+                    <connections>
+                        <outlet property="focusNode" destination="iQU-N9-Vp7" id="bNF-Gy-CJZ"/>
+                        <outlet property="sceneView" destination="0iS-q7-D93" id="qsN-Ra-TIa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="223-CQ-FuY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="iQU-N9-Vp7" customClass="FocusPod" customModule="ARFocusSquare_Example" customModuleProvider="target">
+                    <connections>
+                        <outlet property="delegate" destination="jhI-Dj-dPT" id="3R3-Sr-lqD"/>
+                        <outlet property="sceneView" destination="0iS-q7-D93" id="wc7-b6-Fuy"/>
                     </connections>
                 </customObject>
             </objects>
-            <point key="canvasLocation" x="1583" y="-224"/>
-        </scene>
-        <!--Delegate-->
-        <scene sceneID="eeW-Ui-Cht">
-            <objects>
-                <viewController id="tyX-Le-5P9" customClass="FocusSquareViewControllerIB" customModule="ARFocusSquare_Example" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="IfN-7h-oiM"/>
-                        <viewControllerLayoutGuide type="bottom" id="dJN-eT-AmK"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="99M-P8-l4V">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wlk-ec-7oN">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <connections>
-                                    <outlet property="delegate" destination="tyX-Le-5P9" id="F1D-c7-AOW"/>
-                                </connections>
-                            </arscnView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J3q-Pf-Emo">
-                                <rect key="frame" x="14" y="561" width="51" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Hide"/>
-                                <connections>
-                                    <action selector="hideFocusNode:" destination="tyX-Le-5P9" eventType="touchUpInside" id="Bru-91-A5d"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bbc-i3-qbj">
-                                <rect key="frame" x="107" y="561" width="61" height="42"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal" title="Show"/>
-                                <connections>
-                                    <action selector="showFocusNode:" destination="tyX-Le-5P9" eventType="touchUpInside" id="iEY-AJ-rcu"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="width" secondItem="99M-P8-l4V" secondAttribute="width" id="3gy-ZR-t4b"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="bbc-i3-qbj" secondAttribute="trailing" constant="20" symbolic="YES" id="CCM-Oe-5zL"/>
-                            <constraint firstItem="bbc-i3-qbj" firstAttribute="centerY" secondItem="J3q-Pf-Emo" secondAttribute="centerY" id="MBv-VX-Fnl"/>
-                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="centerX" secondItem="99M-P8-l4V" secondAttribute="centerX" id="PeQ-EE-JSY"/>
-                            <constraint firstItem="bbc-i3-qbj" firstAttribute="leading" secondItem="J3q-Pf-Emo" secondAttribute="trailing" constant="42" id="bHv-H8-Vp8"/>
-                            <constraint firstItem="dJN-eT-AmK" firstAttribute="top" secondItem="J3q-Pf-Emo" secondAttribute="bottom" constant="64" id="clK-iQ-4XV"/>
-                            <constraint firstItem="J3q-Pf-Emo" firstAttribute="leading" secondItem="99M-P8-l4V" secondAttribute="leading" constant="14" id="iz0-Sw-paB"/>
-                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="height" secondItem="99M-P8-l4V" secondAttribute="height" id="pCD-PI-d7n"/>
-                            <constraint firstItem="Wlk-ec-7oN" firstAttribute="centerY" secondItem="99M-P8-l4V" secondAttribute="centerY" id="w0h-vm-bQ1"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="6Kl-uc-wAf"/>
-                    <connections>
-                        <outlet property="focusNode" destination="olJ-Mt-AgF" id="ci8-1w-m40"/>
-                        <outlet property="sceneView" destination="Wlk-ec-7oN" id="gax-86-JIb"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="YWp-ug-Ai9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <customObject id="olJ-Mt-AgF" customClass="FocusArc" customModule="ARFocusSquare">
-                    <connections>
-                        <outlet property="delegate" destination="tyX-Le-5P9" id="dZo-95-qVA"/>
-                        <outlet property="sceneView" destination="Wlk-ec-7oN" id="Wqa-Hf-m9C"/>
-                    </connections>
-                </customObject>
-            </objects>
-            <point key="canvasLocation" x="758" y="1268"/>
+            <point key="canvasLocation" x="3737" y="1268"/>
         </scene>
     </scenes>
 </document>

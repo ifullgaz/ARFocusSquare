@@ -19,10 +19,10 @@ private func pulseAction() -> SCNAction {
 }
 
 private func flashAnimation(duration: TimeInterval) -> SCNAction {
-    let action = SCNAction.customAction(duration: duration) { (node, elapsedTime) -> Void in
+    let action = SCNAction.customAction(duration: duration) { (node, elapsed) -> Void in
         // animate color from HSB 48/100/100 to 48/30/100 and back
-        let elapsedTimePercentage = elapsedTime / CGFloat(duration)
-        let saturation = 2.8 * (elapsedTimePercentage - 0.5) * (elapsedTimePercentage - 0.5) + 0.3
+        let percent: CGFloat = duration == 0.0 ? 1.0 : elapsed / CGFloat(duration)
+        let saturation = 2.8 * (percent - 0.5) * (percent - 0.5) + 0.3
         if let material = node.geometry?.firstMaterial {
             material.diffuse.contents = UIColor(hue: 0.1333, saturation: saturation, brightness: 1.0, alpha: 1.0)
         }
@@ -75,6 +75,37 @@ class FocusPod: FocusNode {
     /// Indicates if the square is currently being animated for opening or closing.
     private var isAnimating = false
     
+    private func keyFrameBasedScaleAnimation(duration: TimeInterval) -> SCNAction {
+        let size = displaySize * displayScale
+        let ts = size * FocusPod.scaleForOnPlane
+
+        let scaleAnimationStage1 = SCNAction.scale(
+            to: CGFloat(size * 1.15),
+            duration: duration * 0.25)
+        scaleAnimationStage1.timingMode = .easeOut
+
+        let scaleAnimationStage2 = SCNAction.scale(
+            to: CGFloat(size * 1.15),
+            duration: duration * 0.25)
+        scaleAnimationStage2.timingMode = .linear
+
+        let scaleAnimationStage3 = SCNAction.scale(
+            to: CGFloat(ts * 0.97),
+            duration: duration * 0.25)
+        scaleAnimationStage3.timingMode = .easeOut
+
+        let scaleAnimationStage4 = SCNAction.scale(
+            to: CGFloat(ts),
+            duration: duration * 0.25)
+        scaleAnimationStage4.timingMode = .easeInEaseOut
+
+        return SCNAction.sequence([
+            scaleAnimationStage1,
+            scaleAnimationStage2,
+            scaleAnimationStage3,
+            scaleAnimationStage4])
+    }
+
     private func animateOffPlaneState() {
         // Open animation
         guard !isOpen, !isAnimating else { return }
@@ -82,22 +113,17 @@ class FocusPod: FocusNode {
         isAnimating = true
 
         // Open animation
-        SCNTransaction.begin()
-        SCNTransaction.animationTimingFunction = CAMediaTimingFunction(name: .easeOut)
-        SCNTransaction.animationDuration = FocusPod.animationDuration / 4
-        positioningNode.opacity = 1.0
-        SCNTransaction.completionBlock = {
-            self.positioningNode.runAction(pulseAction(), forKey: "pulse")
+        let duration: TimeInterval = FocusSquare.animationDuration / 4
+        let opacityAnimation = SCNAction.fadeIn(duration: duration)
+        opacityAnimation.timingMode = .easeOut
+        let scaleAnimation = SCNAction.scale(to: CGFloat(displaySize * displayScale), duration: duration)
+        scaleAnimation.timingMode = .easeOut
+        let actions = SCNAction.group([opacityAnimation, scaleAnimation])
+        self.runAction(actions) {
+            self.runAction(pulseAction(), forKey: "pulse")
             // This is a safe operation because `SCNTransaction`'s completion block is called back on the main thread.
             self.isAnimating = false
         }
-        SCNTransaction.commit()
-        // Add a scale/bounce animation.
-        SCNTransaction.begin()
-        SCNTransaction.animationTimingFunction = CAMediaTimingFunction(name: .easeOut)
-        SCNTransaction.animationDuration = FocusPod.animationDuration / 4
-        positioningNode.simdScale = SIMD3<Float>(repeating: FocusPod.size)
-        SCNTransaction.commit()
     }
     
     private func animateOnPlaneState(newPlane: Bool = false) {
@@ -105,32 +131,19 @@ class FocusPod: FocusNode {
         isOpen = false
         isAnimating = true
 
-        positioningNode.removeAction(forKey: "pulse")
-        positioningNode.opacity = 1.0
+        self.removeAction(forKey: "pulse")
+        self.opacity = 1.0
 
-        // Close animation
-        SCNTransaction.begin()
-        SCNTransaction.animationTimingFunction = CAMediaTimingFunction(name: .easeOut)
-        SCNTransaction.animationDuration = FocusPod.animationDuration / 2
-        positioningNode.opacity = 0.99
-        SCNTransaction.completionBlock = {
-            SCNTransaction.begin()
-            SCNTransaction.animationTimingFunction = CAMediaTimingFunction(name: .easeOut)
-            SCNTransaction.animationDuration = FocusPod.animationDuration / 4
+        let duration: TimeInterval = FocusArc.animationDuration
 
-            SCNTransaction.completionBlock = {
-                self.isAnimating = false
-            }
-            SCNTransaction.commit()
-        }
-        SCNTransaction.commit()
-
-        // Scale/bounce animation
-        positioningNode.addAnimation(scaleAnimation(for: "transform.scale.x"), forKey: "transform.scale.x")
-        positioningNode.addAnimation(scaleAnimation(for: "transform.scale.y"), forKey: "transform.scale.y")
-        positioningNode.addAnimation(scaleAnimation(for: "transform.scale.z"), forKey: "transform.scale.z")
-
-        if newPlane {
+        let opacityAnimation = SCNAction.fadeOpacity(to: 0.99, duration: duration / 2.0)
+        opacityAnimation.timingMode = .easeOut
+        // Scale animation
+        let scalingAnimation = keyFrameBasedScaleAnimation(duration: duration)
+        // Opacity and scale animations will run concurrently
+        let actions = SCNAction.group([scalingAnimation, opacityAnimation])
+        self.runAction(actions) {
+            self.isAnimating = false
         }
     }
     
@@ -147,7 +160,7 @@ class FocusPod: FocusNode {
     open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
         super.displayStateChanged(state, newPlane: newPlane)
         switch state {
-        case .initializing, .billboard:
+            case .initializing, .billboard:
                 animateOffPlaneState()
             case .offPlane:
                 animateOffPlaneState()
@@ -170,10 +183,10 @@ class FocusPod: FocusNode {
             makeMaterial(from: FocusPod.sidesColor)
         ]
         geometry.materials = materials
-////        material.ambient.contents = UIColor.black
         pyramid.geometry = geometry
-        positioningNode.addChildNode(pyramid)
-        positioningNode.eulerAngles.y = .pi // Horizontal
-        positioningNode.simdScale = SIMD3<Float>(repeating: FocusPod.size * FocusPod.scaleForOnPlane)
+        pyramid.pivot = SCNMatrix4MakeTranslation(0.0, -FocusPod.size * 0.707 / 2.0, 0.0)
+        pyramid.eulerAngles.x = .pi / 2
+        self.addChildNode(pyramid)
+        displaySize = FocusPod.size * FocusPod.scaleForOnPlane
     }
 }

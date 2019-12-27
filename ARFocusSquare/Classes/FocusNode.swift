@@ -161,12 +161,22 @@ open class FocusNode: SCNNode {
     @IBOutlet
     public weak var delegate: AnyObject?
 
-    public var updateQueue: DispatchQueue?
+    /// The queue on which all operations are done
+    public var updateQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)
 
-    // MARK: - Variables needed for operation
-    /// The primary node that controls the position of other `FocusSquare` nodes.
-    public let positioningNode = SCNNode()
-
+    /// The size of the focus node
+    public var displaySize: Float = 1.0 {
+        didSet {
+            self.simdScale = SIMD3<Float>(repeating: displaySize) * displayScale
+        }
+    }
+    
+    public var displayScale: Float = 1.0 {
+        didSet {
+            self.simdScale = SIMD3<Float>(repeating: displaySize) * displayScale
+        }
+    }
+    
     override open var isHidden: Bool {
         didSet {
             guard isHidden != oldValue, !isChangingVisibility else { return }
@@ -180,6 +190,9 @@ open class FocusNode: SCNNode {
     }
 
 	// MARK: - Properties
+    /// Set to true when initialisation completed
+    private var isInitialized: Bool = false
+    
     /// Indicates if the square is currently changing its orientation when the camera is pointing downwards.
     private var isChangingVisibility: Bool = false
     
@@ -213,12 +226,12 @@ open class FocusNode: SCNNode {
 
     private(set) public var detectionState: DetectionState = .initializing {
         didSet {
-            guard detectionState != oldValue else { return }
-
+            guard isInitialized else { return }
             switch detectionState {
                 case .initializing:
                     displayAsBillboard()
                 case let .detecting(raycastResult, camera):
+                    guard detectionState != oldValue else { return }
                     if let planeAnchor = raycastResult.anchor as? ARPlaneAnchor {
                         displayAsOnPlane(for: raycastResult, planeAnchor: planeAnchor, camera: camera)
                     } else {
@@ -229,67 +242,103 @@ open class FocusNode: SCNNode {
     }
 
     // MARK: - Private methods
+    private func initialize() {
+        self.opacity = 1.0
+        self.initGeometry()
+        self.updateQueue.async {
+            self.isInitialized = true
+            self.displayAsBillboard()
+            // Always render focus square on top of other content.
+            self.displayOnTop(true)
+        }
+    }
+    
 	/// Displays the focus square parallel to the camera plane.
 	private func displayAsBillboard() {
 		simdTransform = matrix_identity_float4x4
-		eulerAngles.x = .pi / 2
+        displayScale = 1.0
 		simdPosition = SIMD3<Float>(0, 0, -0.8)
+        recentFocusNodePositions.removeAll()
         displayState = .billboard
 	}
 
 	/// Called when a surface has been detected.
 	private func displayAsOffPlane(for raycastResult: ARRaycastResult, camera: ARCamera?) {
-        self.setPosition(with: raycastResult, camera)
+        self.updateTransform(with: raycastResult, camera)
         displayState = .offPlane
 	}
 
 	/// Called when a plane has been detected.
 	private func displayAsOnPlane(for raycastResult: ARRaycastResult, planeAnchor: ARPlaneAnchor, camera: ARCamera?) {
-        self.setPosition(with: raycastResult, camera)
+        self.updateTransform(with: raycastResult, camera)
         displayState = .onPlane(newPlane: !anchorsOfVisitedPlanes.contains(planeAnchor))
         anchorsOfVisitedPlanes.insert(planeAnchor)
 	}
 
-    private func setPosition(with raycastResult: ARRaycastResult, _ camera: ARCamera?) {
+    private func updateTransform(with raycastResult: ARRaycastResult, _ camera: ARCamera?) {
+        // Update the world position
+        updatePosition(with: raycastResult)
+        // Update the visual scale
+        updateDistanceBasedScale(camera: camera)
+        // Update the orientation
+        updateOrientation(for: raycastResult, camera: camera)
+    }
+
+    private func updatePosition(with raycastResult: ARRaycastResult) {
         let position = raycastResult.worldTransform.translation
         recentFocusNodePositions.append(position)
-        updateTransform(for: raycastResult, camera: camera)
+        // Average using several most recent positions.
+        recentFocusNodePositions = Array(recentFocusNodePositions.suffix(10))
+        // Move to average of recent positions to avoid jitter.
+        let average = recentFocusNodePositions.reduce(
+            SIMD3<Float>(repeating: 0), { $0 + $1 }) / Float(recentFocusNodePositions.count)
+        self.simdPosition = average
+    }
+
+    /**
+    Reduce visual size change with distance by scaling up when close and down when far away.
+    These adjustments result in a scale of 1.0x for a distance of 0.7 m or less
+    (estimated distance when looking at a table), and a scale of 1.2x
+    for a distance 1.5 m distance (estimated distance when looking at the floor).
+    */
+    private func updateDistanceBasedScale(camera: ARCamera?) {
+        var newDisplayScale: Float = 1.0
+        if let camera = camera {
+            let distanceFromCamera = simd_length(simdWorldPosition - camera.transform.translation)
+            if distanceFromCamera < 0.7 {
+                newDisplayScale = distanceFromCamera / 0.7
+            } else {
+                newDisplayScale = 0.25 * distanceFromCamera + 0.825
+            }
+        }
+        self.displayScale = newDisplayScale
     }
 
 	// MARK: - Positioning and orientation
-    // - Tag: Set3DOrientation
-    private func updateOrientation(basedOn raycastResult: ARRaycastResult) {
-        self.simdOrientation = raycastResult.worldTransform.orientation
-    }
-    
 	/// Update the transform of the focus square to be aligned with the camera.
-    private func updateTransform(for raycastResult: ARRaycastResult, camera: ARCamera?) {
-		// Average using several most recent positions.
-		recentFocusNodePositions = Array(recentFocusNodePositions.suffix(10))
-
-		// Move to average of recent positions to avoid jitter.
-		let average = recentFocusNodePositions.reduce(
-			SIMD3<Float>(repeating: 0), { $0 + $1 }) / Float(recentFocusNodePositions.count)
-		self.simdPosition = average
-        self.simdScale = [1.0, 1.0, 1.0] * scaleBasedOnDistance(camera: camera)
+    private func updateOrientation(for raycastResult: ARRaycastResult, camera: ARCamera?) {
 
 		// Correct y rotation of camera square.
 		guard let camera = camera else { return }
 		let tilt = abs(camera.eulerAngles.x)
+        // ~67.5 degrees, looking down or up
         let threshold: Float = .pi / 2 * 0.75
         
         if tilt > threshold {
             if !isChangingOrientation {
                 let yaw = atan2f(camera.transform.columns.0.x, camera.transform.columns.1.x)
-                
+
                 isChangingOrientation = true
+                // Rotate the node -90° to be perpendicular to the plan
+                let simdRotation = simd_quatf(angle: -.pi / 2, axis: [1, 0, 0])
+                let simdOrientation = simd_quatf(angle: yaw, axis: [0, 1, 0])
                 SCNTransaction.begin()
                 SCNTransaction.completionBlock = {
                     self.isChangingOrientation = false
                     self.isPointingDownwards = true
                 }
                 SCNTransaction.animationDuration = isPointingDownwards ? 0.0 : 0.5
-                self.simdOrientation = simd_quatf(angle: yaw, axis: [0, 1, 0])
+                self.simdOrientation = simdOrientation * simdRotation
                 SCNTransaction.commit()
             }
         } else {
@@ -298,9 +347,12 @@ open class FocusNode: SCNNode {
                 counterToNextOrientationUpdate = 0
                 isPointingDownwards = false
                 
+                // Rotate the node -90° to be perpendicular to the plan
+                let simdRotation = simd_quatf(angle: -.pi / 2, axis: [1, 0, 0])
+                let simdOrientation = raycastResult.worldTransform.orientation
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = 0.5
-                updateOrientation(basedOn: raycastResult)
+                self.simdOrientation = simdOrientation * simdRotation
                 SCNTransaction.commit()
             }
             
@@ -308,32 +360,14 @@ open class FocusNode: SCNNode {
         }
 	}
 
-	/**
-	Reduce visual size change with distance by scaling up when close and down when far away.
-	These adjustments result in a scale of 1.0x for a distance of 0.7 m or less
-	(estimated distance when looking at a table), and a scale of 1.2x
-	for a distance 1.5 m distance (estimated distance when looking at the floor).
-	*/
-	private func scaleBasedOnDistance(camera: ARCamera?) -> Float {
-		guard let camera = camera else { return 1.0 }
-
-		let distanceFromCamera = simd_length(simdWorldPosition - camera.transform.translation)
-		if distanceFromCamera < 0.7 {
-			return distanceFromCamera / 0.7
-		} else {
-			return 0.25 * distanceFromCamera + 0.825
-		}
-	}
-
     /// Hides the focus square.
     open func hide(animated: Bool) {
         let duration = animated ? type(of: self).animationDuration : 0.0
         guard action(forKey: "hide") == nil else { return }
-        self.isChangingVisibility = true
+        removeAction(forKey: "unhide")
         runAction(.fadeOut(duration: duration), forKey: "hide") {
             self.displayOnTop(false)
             self.isHidden = true
-            self.isChangingVisibility = false
         }
     }
 
@@ -341,20 +375,16 @@ open class FocusNode: SCNNode {
     open func unhide(animated: Bool) {
         let duration = animated ? type(of: self).animationDuration : 0.0
         guard action(forKey: "unhide") == nil else { return }
-        self.isChangingVisibility = true
+        removeAction(forKey: "hide")
+        runAction(.fadeIn(duration: duration), forKey: "unhide")
         displayOnTop(true)
         self.isHidden = false
         self.opacity = 0.0
-        runAction(.fadeIn(duration: duration), forKey: "unhide") {
-           self.isChangingVisibility = false
-       }
     }
 
     // MARK: - Public methods
     public func set(hidden: Bool, animated: Bool) {
-        guard hidden != isHidden, !isChangingVisibility else {
-            return
-        }
+        guard hidden != isHidden, !isChangingVisibility else { return }
         switch hidden {
             case true:
                 hide(animated: animated)
@@ -370,6 +400,7 @@ open class FocusNode: SCNNode {
     /// - Parameters:
     ///     - point: coordinates of the point on the screen at which to estimate the planes
     public func updateFocusNode(from point: CGPoint? = nil) {
+        guard isInitialized else { return }
         guard let view = self.sceneView else {
             self.detectionState = .initializing
             return
@@ -386,26 +417,22 @@ open class FocusNode: SCNNode {
                case .normal = camera.trackingState,
                let result = view.getEstimatedPlanes(from: point)?.first {
                 self.detectionState = .detecting(raycastResult: result, camera: camera)
+                guard self.parent !== view.scene.rootNode else { return }
                 view.scene.rootNode.addChildNode(self)
             }
             else {
                 self.detectionState = .initializing
+                guard self.parent !== view.pointOfView else { return }
                 view.pointOfView?.addChildNode(self)
             }
         }
         let screenPoint = point ?? view.screenCenter
-        if (updateQueue == nil && Thread.isMainThread) {
+        updateQueue.async {
             updateNode(view, screenPoint)
-        }
-        else {
-            let queue = updateQueue ?? DispatchQueue.main
-            queue.async {
-                updateNode(view, screenPoint)
-            }
         }
     }
     
-    /// Sets the rendering order of the `positioningNode` to show on top or under other scene content.
+    /// Sets the rendering order of the `node` to show on top or under other scene content.
     open func displayOnTop(_ isOnTop: Bool) {
         // Recursivley traverses the node's children to update the rendering order depending on the `isOnTop` parameter.
         func updateRenderOrder(for node: SCNNode) {
@@ -420,10 +447,40 @@ open class FocusNode: SCNNode {
             }
         }
 
-        updateRenderOrder(for: self.positioningNode)
+        updateRenderOrder(for: self)
     }
 
     // MARK: Appearance
+    /// It is called by the system to allow subclasses to update the appearence of the
+    /// node. A subclass should call `super.displayStateChanged` in order to
+    /// notify the delegate of the change.
+    ///
+    /// - parameters:
+    ///     - state: the display state
+    ///     - newPlane: true when a new plane was detected
+    /// - Returns:
+    ///     FocusNode: A focus node associated with and displayed by the view.
+    ///     The delegate of the focus node is the caller.
+    ///
+    /// Implement this methiod to respond to changes to the world tracking state
+    /// For instance:
+    /// ````
+    /// open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
+    /// super.displayStateChanged(state, newPlane: newPlane)
+    ///     switch state {
+    ///     case .initializing, .billboard:
+    ///             animateOffPlaneState()
+    ///         case .offPlane:
+    ///             animateOffPlaneState()
+    ///         case .onPlane:
+    ///             animateOnPlaneState(newPlane: newPlane)
+    ///     }
+    /// }
+    ///````
+    ///  - attention
+    /// `displayStateChanged` should not be called directly.
+    ///
+
     open func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
         if let delegate = delegate as? FocusNodeDelegate {
             DispatchQueue.main.async {
@@ -433,34 +490,38 @@ open class FocusNode: SCNNode {
         displayOnTop(true)
     }
 
-    private func initialize() {
-        self.initGeometry()
-        let queue = updateQueue ?? DispatchQueue.main
-        queue.async {
-            self.displayAsBillboard()
-            // Always render focus square on top of other content.
-            self.displayOnTop(true)
-        }
-    }
-    
     // MARK: - Initialization
-    open func initGeometry() {
-        self.opacity = 1.0
-        addChildNode(self.positioningNode)
-    }
+    /// Subclasses should override this method to add each node to the hierarchy.
+    ///
+    /// Subnodes are added by calling
+    /// ````
+    /// self.addChildNode(aNode)
+    /// ````
+    ///
+    /// - note
+    /// All subnodes are added to a special node and that subnodes
+    /// are only added to it, never to the focus node itself
+    open func initGeometry() {}
     
     required public override init() {
         super.init()
+        // Dispatching on the main queue leaves time to the
+        // callers to change settings before starting to run
         DispatchQueue.main.async {
-            self.initialize()
+            self.updateQueue.async {
+                self.initialize()
+            }
         }
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        // Dispatching on the main queue leaves time to the
+        // callers to change settings before starting to run
         DispatchQueue.main.async {
-            self.initGeometry()
-            self.initialize()
+            self.updateQueue.async {
+                self.initialize()
+            }
         }
     }
 }

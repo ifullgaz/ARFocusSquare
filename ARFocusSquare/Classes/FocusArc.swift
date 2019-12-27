@@ -18,37 +18,6 @@ private func pulseAction() -> SCNAction {
     return SCNAction.repeatForever(SCNAction.sequence([pulseOutAction, pulseInAction]))
 }
 
-private func scaleAnimation(duration: TimeInterval) -> SCNAction {
-    let size = FocusArc.size
-    let ts = FocusArc.size * FocusArc.onPlaneScale
-
-    let scaleAnimationStage1 = SCNAction.scale(
-        to: CGFloat(size * 1.15),
-        duration: FocusArc.animationDuration * 0.25)
-    scaleAnimationStage1.timingMode = .easeOut
-
-    let scaleAnimationStage2 = SCNAction.scale(
-        to: CGFloat(size * 1.15),
-        duration: FocusArc.animationDuration * 0.25)
-    scaleAnimationStage2.timingMode = .linear
-
-    let scaleAnimationStage3 = SCNAction.scale(
-        to: CGFloat(ts * 0.97),
-        duration: FocusArc.animationDuration * 0.25)
-    scaleAnimationStage3.timingMode = .easeOut
-
-    let scaleAnimationStage4 = SCNAction.scale(
-        to: CGFloat(ts),
-        duration: FocusArc.animationDuration * 0.25)
-    scaleAnimationStage4.timingMode = .easeInEaseOut
-
-    return SCNAction.sequence([
-        scaleAnimationStage1,
-        scaleAnimationStage2,
-        scaleAnimationStage3,
-        scaleAnimationStage4])
-}
-
 private func animationFrame(node: SCNNode, progress: CGFloat) {
     if let layer = node.geometry?.materials.first?.diffuse.contents as? CAShapeLayer {
         CATransaction.begin()
@@ -57,32 +26,6 @@ private func animationFrame(node: SCNNode, progress: CGFloat) {
         layer.strokeEnd = 1 - layer.strokeStart
         CATransaction.commit()
     }
-}
-
-private func openArcAnimation(duration: TimeInterval) -> SCNAction {
-    let action = SCNAction.customAction(duration: duration) { (node, elapsed) in
-        let percent: CGFloat = elapsed / CGFloat(duration)
-        animationFrame(node: node, progress: percent)
-    }
-    let completion = SCNAction.customAction(duration: 0) { (node, elapsed) in
-        animationFrame(node: node, progress: 1.0)
-    }
-    action.timingMode = .easeInEaseOut
-    action.timingFunction = { (time) in return time }
-    return SCNAction.sequence([action, completion])
-}
-
-private func closeArcAnimation(duration: TimeInterval) -> SCNAction {
-    let action = SCNAction.customAction(duration: duration) { (node, elapsed) in
-        let percent: CGFloat = 1 - elapsed / CGFloat(duration)
-        animationFrame(node: node, progress: percent)
-    }
-    let completion = SCNAction.customAction(duration: 0) { (node, elapsed) in
-        animationFrame(node: node, progress: 0.0)
-    }
-    action.timingMode = .easeInEaseOut
-    action.timingFunction = { (time) in return time }
-    return SCNAction.sequence([action, completion])
 }
 
 private func rad(_ degree: CGFloat) -> CGFloat {
@@ -118,6 +61,7 @@ private func makeArcGeometry(arcAngle: CGFloat, scale: CGFloat, lineWidth: CGFlo
 
     let layerMaterial = SCNMaterial()
     layerMaterial.diffuse.contents = layer
+    layerMaterial.emission.contents = layer
     layerMaterial.isDoubleSided = true
     let planeGeometry = SCNPlane(
         width: frame.width / scale / 2,
@@ -154,6 +98,24 @@ private extension FocusArc {
 
         let quadrant: Quadrant
                 
+        func open(duration: TimeInterval) {
+            let action = SCNAction.customAction(duration: duration) { (node, elapsed) in
+                let percent: CGFloat = duration == 0.0 ? 1.0 : elapsed / CGFloat(duration)
+                animationFrame(node: node, progress: percent)
+            }
+            action.timingMode = .easeInEaseOut
+            self.runAction(action)
+        }
+
+        func close(duration: TimeInterval) {
+            let action = SCNAction.customAction(duration: duration) { (node, elapsed) in
+                let percent: CGFloat = duration == 0.0 ? 0.0 : 1 - elapsed / CGFloat(duration)
+                animationFrame(node: node, progress: percent)
+            }
+            action.timingMode = .easeInEaseOut
+            self.runAction(action)
+        }
+
         init(name: String, quadrant: Quadrant) {
             self.quadrant = quadrant
             super.init()
@@ -167,12 +129,12 @@ private extension FocusArc {
                 -Float(size.height - size.width / 2),
                 -Float(size.height / 2.0),
                 0)
-            var zAngle: CGFloat = 90 - Arc.arcAngle / 2.0
+            var zAngle: CGFloat = -Arc.arcAngle / 2.0 - 90
             switch quadrant {
             case .left:
-                zAngle += Arc.arcAngle
-            case .right:
                 zAngle -= Arc.arcAngle
+            case .right:
+                zAngle += Arc.arcAngle
             default:
                 break
             }
@@ -216,7 +178,7 @@ open class FocusArc: FocusNode {
     static var fillColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 
     /// Indicates whether the segments of the focus square are disconnected.
-    private var isOpen = false
+    private var isOpen = true
 
     /// Indicates if the square is currently being animated for opening or closing.
     private var isAnimating = false
@@ -252,45 +214,57 @@ open class FocusArc: FocusNode {
         return node
     }()
 
+    private func scaleAnimation(duration: TimeInterval) -> SCNAction {
+        let size = displaySize * displayScale
+        let ts = size * FocusArc.onPlaneScale
+
+        let scaleAnimationStage1 = SCNAction.scale(
+            to: CGFloat(size * 1.15),
+            duration: duration * 0.25)
+        scaleAnimationStage1.timingMode = .easeOut
+
+        let scaleAnimationStage2 = SCNAction.scale(
+            to: CGFloat(size * 1.15),
+            duration: duration * 0.25)
+        scaleAnimationStage2.timingMode = .linear
+
+        let scaleAnimationStage3 = SCNAction.scale(
+            to: CGFloat(ts * 0.97),
+            duration: duration * 0.25)
+        scaleAnimationStage3.timingMode = .easeOut
+
+        let scaleAnimationStage4 = SCNAction.scale(
+            to: CGFloat(ts),
+            duration: duration * 0.25)
+        scaleAnimationStage4.timingMode = .easeInEaseOut
+
+        return SCNAction.sequence([
+            scaleAnimationStage1,
+            scaleAnimationStage2,
+            scaleAnimationStage3,
+            scaleAnimationStage4])
+    }
+
     private func animateOffPlaneState() {
         // Open animation
         guard !isOpen, !isAnimating else { return }
         isOpen = true
         isAnimating = true
 
-        var animation1 = false
-        var animation2 = false
-        
+        // Open animation
         let duration: TimeInterval = FocusArc.animationDuration / 4
-        let arcAnimation = openArcAnimation(duration: duration)
         let opacityAnimation = SCNAction.fadeIn(duration: duration)
         opacityAnimation.timingMode = .easeOut
-        opacityAnimation.timingFunction = { (time) in return time }
-        let scaleAnimation = SCNAction.scale(to: CGFloat(FocusArc.size), duration: duration)
+        let scaleAnimation = SCNAction.scale(to: CGFloat(displaySize * displayScale), duration: duration)
         scaleAnimation.timingMode = .easeOut
-        scaleAnimation.timingFunction = { (time) in return time }
         let actions = SCNAction.group([opacityAnimation, scaleAnimation])
-        positioningNode.runAction(actions) {
-            self.positioningNode.runAction(pulseAction(), forKey: "pulse")
+        self.runAction(actions) {
+            self.runAction(pulseAction(), forKey: "pulse")
             // This is a safe operation because `SCNTransaction`'s completion block is called back on the main thread.
-            guard animation2 else {
-                animation1 = true
-                return
-            }
             self.isAnimating = false
         }
-        guard arcs.count > 0 else {
-            animation2 = true
-            return
-        }
         for arc in arcs {
-            arc.runAction(arcAnimation) {
-                guard animation1 else {
-                    animation2 = true
-                    return
-                }
-                self.isAnimating = false
-            }
+            arc.open(duration: duration)
         }
     }
 
@@ -299,22 +273,26 @@ open class FocusArc: FocusNode {
         isOpen = false
         isAnimating = true
 
-        positioningNode.removeAction(forKey: "pulse")
-        positioningNode.opacity = 1.0
+        self.removeAction(forKey: "pulse")
+        self.opacity = 1.0
 
         let duration: TimeInterval = FocusArc.animationDuration
+        // Opacity animation
         let opacityAnimation = SCNAction.fadeOpacity(to: 0.99, duration: duration / 2.0)
         opacityAnimation.timingMode = .easeOut
-        opacityAnimation.timingFunction = { (time) in return time }
-        let actions = SCNAction.group([scaleAnimation(duration: duration), opacityAnimation])
-        positioningNode.runAction(actions)
+        // Scale animation
+        let scalingAnimation = scaleAnimation(duration: duration)
+        // Opacity and scale animations will run concurrently
+        let actions = SCNAction.group([scalingAnimation, opacityAnimation])
+        self.runAction(actions) {
+            self.isAnimating = false
+        }
+
+        // Wait for a bit then animate the arcs
         let waitAnimation = SCNAction.wait(duration: duration / 2.0)
         self.runAction(waitAnimation) {
-            let arcAnimation = closeArcAnimation(duration: duration / 4.0)
             for arc in self.arcs {
-                arc.runAction(arcAnimation) {
-                    self.isAnimating = false
-                }
+                arc.close(duration: duration / 4.0)
             }
         }
         
@@ -336,7 +314,7 @@ open class FocusArc: FocusNode {
         coneGeometry.materials = [coneMaterial]
         cone.geometry = coneGeometry
         cone.pivot = SCNMatrix4MakeTranslation(0.0, FocusArc.coneHeightRatio / 2.0, 0.0)
-        cone.eulerAngles.x = Float(rad(90))
+        cone.eulerAngles.x = -Float(rad(90))
     }
     
     // MARK: Appearance
@@ -354,22 +332,23 @@ open class FocusArc: FocusNode {
 
     // MARK: - Initialization
     open override func initGeometry() {
-        super.initGeometry()
-        let a1 = Arc(name: "a1", quadrant: .left)
-        let a2 = Arc(name: "a2", quadrant: .bottom)
-        let a3 = Arc(name: "a3", quadrant: .right)
-        arcs = [a1, a2, a3]
+        DispatchQueue.main.sync {
+            super.initGeometry()
+            let a1 = Arc(name: "a1", quadrant: .left)
+            let a2 = Arc(name: "a2", quadrant: .bottom)
+            let a3 = Arc(name: "a3", quadrant: .right)
+            arcs = [a1, a2, a3]
 
-        for arc in arcs {
-            positioningNode.addChildNode(arc)
-            arc.runAction(openArcAnimation(duration: 0))
+            for arc in arcs {
+                self.addChildNode(arc)
+                arc.open(duration: 0)
+            }
+
+            self.isOpen = true
+            createConeNode()
+            self.addChildNode(cone)
+            self.addChildNode(fillPlane)
+            self.displaySize = FocusArc.size * FocusArc.onPlaneScale
         }
-
-        createConeNode()
-        positioningNode.addChildNode(cone)
-
-        positioningNode.addChildNode(fillPlane)
-        positioningNode.eulerAngles.x = .pi / 2 // Horizontal
-        positioningNode.simdScale = SIMD3<Float>(repeating: FocusArc.size * FocusArc.onPlaneScale)
     }
 }

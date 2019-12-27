@@ -9,7 +9,7 @@
 import ARKit
 import ARFocusSquare
 
-class FocusSquareDemoViewController: UIViewController {
+class FocusPodDemoViewController: UIViewController {
 
     @IBOutlet weak var sceneView: SCNView!
 
@@ -17,7 +17,7 @@ class FocusSquareDemoViewController: UIViewController {
     
     var displayState: FocusNode.DisplayState = .offPlane
     var newPlane: Bool = false
-
+    
     lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
 
     @IBAction func viewTapped(_ sender: Any) {
@@ -46,32 +46,8 @@ class FocusSquareDemoViewController: UIViewController {
         cameraNode.position = SCNVector3(x: 0, y: 0, z: 1)
         scene.rootNode.addChildNode(cameraNode)
         
-        focusNode = FocusSquare()
-        focusNode?.updateQueue = updateQueue
-        scene.rootNode.addChildNode(focusNode!)
-    }
-    
-    
-    @IBAction func show(_ sender: Any) {
-        focusNode!.set(hidden: false, animated: true)
-    }
-    
-    @IBAction func hide(_ sender: Any) {
-        focusNode!.set(hidden: true, animated: true)
-    }
-    
-    @IBAction func crazy(_ sender: Any) {
-        let wasHidden: Bool = focusNode!.isHidden
-        focusNode!.isHidden = true
-        focusNode!.set(hidden: true, animated: true)
-        focusNode!.set(hidden: false, animated: true)
-        focusNode!.isHidden = true
-        focusNode!.isHidden = false
-        focusNode!.set(hidden: false, animated: true)
-        focusNode!.set(hidden: true, animated: true)
-        focusNode!.isHidden = true
-
-        focusNode!.isHidden = !wasHidden
-        focusNode!.set(hidden: !wasHidden, animated: true)
+        focusNode = FocusPod()
+        focusNode!.updateQueue = updateQueue
+        scene.rootNode.addChildNode(self.focusNode!)
     }
 }

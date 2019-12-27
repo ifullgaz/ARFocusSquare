@@ -13,7 +13,7 @@ class FocusArcDemoViewController: UIViewController {
 
     @IBOutlet weak var sceneView: SCNView!
 
-    var focusNode: FocusArc?
+    var focusNode: FocusNode?
     
     var displayState: FocusNode.DisplayState = .offPlane
     var newPlane: Bool = false
@@ -47,7 +47,7 @@ class FocusArcDemoViewController: UIViewController {
         scene.rootNode.addChildNode(cameraNode)
         
         focusNode = FocusArc()
-        focusNode?.updateQueue = updateQueue
-        scene.rootNode.addChildNode(focusNode!)
+        focusNode!.updateQueue = updateQueue
+        scene.rootNode.addChildNode(self.focusNode!)
     }
 }

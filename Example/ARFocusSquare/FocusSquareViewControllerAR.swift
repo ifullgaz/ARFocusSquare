@@ -9,24 +9,26 @@
 import ARKit
 import ARFocusSquare
 
-class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodePresenter {
+class FocusSquareViewControllerAR: UIViewController, ARSCNViewDelegate, FocusNodeDelegate {
+    @IBOutlet weak var sceneView: ARSCNView!
+    
+    @IBOutlet var focusNode: FocusNode!
+    
+    @IBAction func showFocusNode(_ sender: Any) {
+        focusNode.isHidden = false
+    }
+    
+    @IBAction func hideFocusNode(_ sender: Any) {
+        focusNode.isHidden = true
+    }
 
-    var sceneView = ARSCNView()
-
-    var focusNode: FocusNode?
+    /// A serial queue used to coordinate adding or removing nodes from the scene.
+    lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.sceneView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        sceneView.frame = self.view.bounds
-        self.view.addSubview(sceneView)
-        self.view.sendSubviewToBack(sceneView)
-
-        sceneView.delegate = self
         sceneView.showsStatistics = true
-
-        setupFocusNode(ofType: FocusPlane.self, in: sceneView)
+        focusNode.updateQueue = updateQueue
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -42,9 +44,9 @@ class FocusPlaneViewController: UIViewController, ARSCNViewDelegate, FocusNodePr
     }
 
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        focusNode!.updateFocusNode()
+        focusNode.updateFocusNode()
     }
-    
+
     func focusNodeChangedDisplayState(_ node: FocusNode) {
         print("Node: ")
         print(node)

@@ -14,9 +14,13 @@ class FocusArcViewControllerAR: UIViewController, ARSCNViewDelegate, FocusNodeDe
         
     @IBOutlet var focusNode: FocusNode!
     
+    /// A serial queue used to coordinate adding or removing nodes from the scene.
+    lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
+
     override func viewDidLoad() {
         super.viewDidLoad()
         sceneView.showsStatistics = true
+        focusNode.updateQueue = updateQueue
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -34,8 +38,8 @@ class FocusArcViewControllerAR: UIViewController, ARSCNViewDelegate, FocusNodeDe
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         focusNode.updateFocusNode()
     }
-    
-    func focusNodeChangedDisplayState(_ node: FocusNode) {
+
+    func focusNodeChangedDisplayState(_ node: FocusNode, state: FocusNode.DisplayState) {
         // Do something
     }
 }

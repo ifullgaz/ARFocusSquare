@@ -55,6 +55,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		181A1B8623BAB4A800018B49 /* Example */ = {
+			isa = PBXGroup;
+			children = (
+				186D59B923AABAF6003E7AF2 /* FocusPod.swift */,
+			);
+			name = Example;
+			sourceTree = "<group>";
+		};
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
@@ -84,7 +92,7 @@
 				1850452323B45192000EEF8B /* FocusSquareDemoViewController.swift */,
 				1850452E23B5824A000EEF8B /* FocusPodViewControllerAR.swift */,
 				1850452723B57F36000EEF8B /* FocusPodDemoViewController.swift */,
-				186D59B923AABAF6003E7AF2 /* FocusPod.swift */,
+				181A1B8623BAB4A800018B49 /* Example */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -163,6 +171,7 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = Y8Z6DSEEW8;
 						LastSwiftMigration = 0900;
 					};
 				};
@@ -389,7 +398,7 @@
 			baseConfigurationReference = 0A38227A331D494CB3599CEB /* Pods-ARFocusSquare_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Y8Z6DSEEW8;
 				INFOPLIST_FILE = ARFocusSquare/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -405,7 +414,7 @@
 			baseConfigurationReference = 5D37177FAD2ACABDD027F403 /* Pods-ARFocusSquare_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Y8Z6DSEEW8;
 				INFOPLIST_FILE = ARFocusSquare/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;

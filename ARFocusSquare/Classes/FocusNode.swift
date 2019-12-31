@@ -9,21 +9,6 @@
 import ARKit
 import IFGExtensions
 
-internal extension ARSCNView {
-	/// Center of the view
-	var screenCenter: CGPoint {
-		let bounds = self.bounds
-		return CGPoint(x: bounds.midX, y: bounds.midY)
-	}
-
-    func getEstimatedPlanes(from point: CGPoint, for alignment: ARRaycastQuery.TargetAlignment = .any) -> [ARRaycastResult]? {
-        if let query = raycastQuery(from: point, allowing: .estimatedPlane, alignment: alignment) {
-            return session.raycast(query)
-        }
-        return nil
-    }
-}
-
 /// Methods you can implement to respond to a change of state of the focus node
 ///
 /// Implement this protocol to work with a focus node and adapt the UI to the
@@ -39,14 +24,20 @@ public protocol FocusNodeDelegate: class {
     /// Provide information when the world tracking state changes
     /// - parameters:
     ///     - node: the focus node
+    ///     - state: the new display state
     ///
     /// Implement this methiod to respond to changes to the world tracking state
-    func focusNodeChangedDisplayState(_ node: FocusNode)
+    func focusNodeChangedDisplayState(_ node: FocusNode, state: FocusNode.DisplayState)
 }
 
 public extension FocusNodeDelegate {
-    /// - Tag: focusNodeChangedDisplay
-//    func focusNodeChangedDisplayState(_ node: FocusNode) {}
+    /// Provide information when the world tracking state changes
+    /// - parameters:
+    ///     - node: the focus node
+    ///     - state: the new display state
+    ///
+    /// Implement this methiod to respond to changes to the world tracking state
+//    func focusNodeChangedDisplayState(_ node: FocusNode, state: FocusNode.DisplayState) {}
 }
 
 /// This protocol adopts the `FocusNodeDelegate` protocol.
@@ -80,8 +71,9 @@ public protocol FocusNodePresenter: FocusNodeDelegate {
 
 public extension FocusNodePresenter {
     @discardableResult
-    func setupFocusNode(ofType type: FocusNode.Type, in sceneView: ARSCNView) -> FocusNode {
-        focusNode = type.init()
+    func setupFocusNode(ofType type: FocusIndicatorNode.Type, in sceneView: ARSCNView) -> FocusNode {
+        let visualFocusNode = type.init()
+        focusNode = FocusNode(content: visualFocusNode)
         focusNode!.sceneView = sceneView
         focusNode!.delegate = self
         sceneView.scene.rootNode.addChildNode(focusNode!)
@@ -89,7 +81,51 @@ public extension FocusNodePresenter {
     }
 }
 
-/// - Tag: FocusNode
+// MARK: - FocusIndicatorNode protocol
+@objc
+public protocol FocusIndicatorNode where Self: SCNNode {
+    /// The initial size in meters
+    /// - returns
+    ///     a Float representing the initial apprent size
+    static var size: Float { get }
+    
+    /// It is set by the focus node to allow the indicator to update its appearence
+    ///
+    /// - parameters:
+    ///     - state: the display state
+    ///
+    /// Implement didSet{} to respond to changes to the world tracking state
+    /// For instance:
+    /// ````
+    /// var displayState: FocusNode.DisplayState = .initializing {
+    ///     didSet {
+    ///         switch state {
+    ///         case .initializing, .billboard:
+    ///                 showAsBillboard()
+    ///             case .offPlane:
+    ///                 showAsOffPlane()
+    ///             case .onNewPlane:
+    ///                 showAsOnNewPlane()
+    ///             case .onPlane:
+    ///                 showAsOnPlane()
+    ///         }
+    ///     }
+    /// }
+    ///````
+    var displayState: FocusNode.DisplayState { get set }
+
+    /// Setup the geometry of the focus indicator.
+    ///
+    /// It is called by the focus node to tell the focus indicator to create its visual appearence.
+    /// For instance, adding sub nodes or loading from a URL
+    ///
+    ///  - attention
+    /// `setupGeometry` should not be called directly.
+    ///
+    func setupGeometry(updateQueue: DispatchQueue)
+}
+
+// MARK: - FocusNode
 /// An `SCNNode` which is used to provide uses with visual cues about the status of ARKit world tracking.
 ///
 /// # Topics
@@ -140,40 +176,57 @@ public extension FocusNodePresenter {
 open class FocusNode: SCNNode {
 
     // MARK: - Types
-    public enum DisplayState: Equatable {
+    @objc
+    public enum DisplayState: Int, CustomStringConvertible {
         case initializing
         case billboard
         case offPlane
-        case onPlane(newPlane: Bool)
+        case onNewPlane
+        case onPlane
+
+        public var description: String {
+            switch self {
+                case .initializing: return "Initializing"
+                case .billboard: return "Billboard"
+                case .offPlane: return "Off plane"
+                case .onNewPlane: return "On new plane"
+                case .onPlane: return "On plane"
+            }
+        }
     }
 
-    public enum DetectionState: Equatable {
+    private enum DetectionState: Equatable {
         case initializing
         case detecting(raycastResult: ARRaycastResult, camera: ARCamera?)
     }
 
-    open class var animationDuration: TimeInterval { 0.35 }
-    
     // MARK: - Variables needed for operation
     @IBOutlet
 	public weak var sceneView: ARSCNView?
 
     @IBOutlet
-    public weak var delegate: AnyObject?
-
-    /// The queue on which all operations are done
-    public var updateQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)
-
-    /// The size of the focus node
-    public var displaySize: Float = 1.0 {
+    /// The node that will conatin the geometry of the focus node
+    public var contentNode: FocusIndicatorNode? {
         didSet {
-            self.simdScale = SIMD3<Float>(repeating: displaySize) * displayScale
+            guard contentNode !== oldValue, self.isInitialized else { return }
+            oldValue?.removeFromParentNode()
+            if contentNode != nil {
+                self.intializeContentNode()
+            }
         }
     }
     
+    @IBOutlet
+    public weak var delegate: AnyObject?
+
+    public var animationDuration: TimeInterval = 0.35
+    
+    /// The queue on which all operations are done
+    public var updateQueue: DispatchQueue = DispatchQueue.global(qos: .userInitiated)
+
     public var displayScale: Float = 1.0 {
         didSet {
-            self.simdScale = SIMD3<Float>(repeating: displaySize) * displayScale
+            self.simdScale = SIMD3<Float>(repeating: displayScale)
         }
     }
     
@@ -189,7 +242,7 @@ open class FocusNode: SCNNode {
         }
     }
 
-	// MARK: - Properties
+	// MARK: - Private Properties
     /// Set to true when initialisation completed
     private var isInitialized: Bool = false
     
@@ -203,7 +256,7 @@ open class FocusNode: SCNNode {
     private var isPointingDownwards: Bool = true
     
 	/// The focus square's most recent positions.
-	private var recentFocusNodePositions: [SIMD3<Float>] = []
+	private var recentPositions: [SIMD3<Float>] = []
 
 	/// Previously visited plane anchors.
 	private var anchorsOfVisitedPlanes: Set<ARAnchor> = []
@@ -211,20 +264,7 @@ open class FocusNode: SCNNode {
     /// A counter for managing orientation updates of the focus square.
     private var counterToNextOrientationUpdate: Int = 0
     
-    private(set) public var displayState: DisplayState = .initializing {
-        didSet {
-            guard displayState != oldValue else { return }
-
-            switch displayState {
-                case .initializing, .billboard, .offPlane:
-                    displayStateChanged(displayState)
-                case let .onPlane(newPlane: newPlane):
-                    displayStateChanged(displayState, newPlane: newPlane)
-            }
-        }
-    }
-
-    private(set) public var detectionState: DetectionState = .initializing {
+    private var detectionState: DetectionState = .initializing {
         didSet {
             guard isInitialized else { return }
             switch detectionState {
@@ -241,57 +281,85 @@ open class FocusNode: SCNNode {
         }
     }
 
+    private(set) public var displayState: DisplayState = .initializing {
+        didSet {
+            displayStateChanged(displayState, oldValue)
+        }
+    }
+
     // MARK: - Private methods
+    private func intializeContentNode() {
+        if let contentNode = contentNode {
+            contentNode.setupGeometry(updateQueue: self.updateQueue)
+            contentNode.simdScale = SIMD3<Float>(repeating: type(of: contentNode).size)
+            self.addChildNode(contentNode)
+        }
+    }
+    
     private func initialize() {
-        self.opacity = 1.0
-        self.initGeometry()
-        self.updateQueue.async {
-            self.isInitialized = true
-            self.displayAsBillboard()
-            // Always render focus square on top of other content.
-            self.displayOnTop(true)
+        // Dispatching on the main queue to have time
+        // to setup things like updateQueue...
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.updateQueue.async { [unowned self] in
+                self.intializeContentNode()
+                self.isInitialized = true
+                self.displayAsBillboard()
+                // Always render focus square on top of other content.
+                self.displayOnTop(true)
+            }
         }
     }
     
 	/// Displays the focus square parallel to the camera plane.
 	private func displayAsBillboard() {
 		simdTransform = matrix_identity_float4x4
-        displayScale = 1.0
+        self.simdScale = SIMD3<Float>(repeating: 1.0)
+        // Rotate the node 0° to face the camera
+        contentNode?.eulerAngles.x = 0.0
+        self.displayScale = 1.0
 		simdPosition = SIMD3<Float>(0, 0, -0.8)
-        recentFocusNodePositions.removeAll()
+        recentPositions.removeAll()
         displayState = .billboard
 	}
 
 	/// Called when a surface has been detected.
 	private func displayAsOffPlane(for raycastResult: ARRaycastResult, camera: ARCamera?) {
+        // Rotate the node -90° to be perpendicular to the plan
+        contentNode?.eulerAngles.x = -.pi / 2
         self.updateTransform(with: raycastResult, camera)
         displayState = .offPlane
 	}
 
 	/// Called when a plane has been detected.
 	private func displayAsOnPlane(for raycastResult: ARRaycastResult, planeAnchor: ARPlaneAnchor, camera: ARCamera?) {
+        // Rotate the node -90° to be perpendicular to the plan
+        contentNode?.eulerAngles.x = -.pi / 2
         self.updateTransform(with: raycastResult, camera)
-        displayState = .onPlane(newPlane: !anchorsOfVisitedPlanes.contains(planeAnchor))
+        displayState = anchorsOfVisitedPlanes.contains(planeAnchor) ? .onPlane : .onNewPlane
         anchorsOfVisitedPlanes.insert(planeAnchor)
 	}
 
     private func updateTransform(with raycastResult: ARRaycastResult, _ camera: ARCamera?) {
+        SCNTransaction.begin()
+        SCNTransaction.animationDuration = 0.0
         // Update the world position
         updatePosition(with: raycastResult)
         // Update the visual scale
         updateDistanceBasedScale(camera: camera)
         // Update the orientation
         updateOrientation(for: raycastResult, camera: camera)
+        SCNTransaction.commit()
     }
 
     private func updatePosition(with raycastResult: ARRaycastResult) {
         let position = raycastResult.worldTransform.translation
-        recentFocusNodePositions.append(position)
+        recentPositions.append(position)
         // Average using several most recent positions.
-        recentFocusNodePositions = Array(recentFocusNodePositions.suffix(10))
+        recentPositions = Array(recentPositions.suffix(10))
         // Move to average of recent positions to avoid jitter.
-        let average = recentFocusNodePositions.reduce(
-            SIMD3<Float>(repeating: 0), { $0 + $1 }) / Float(recentFocusNodePositions.count)
+        let average = recentPositions.reduce(
+            SIMD3<Float>(repeating: 0), { $0 + $1 }) / Float(recentPositions.count)
         self.simdPosition = average
     }
 
@@ -329,30 +397,26 @@ open class FocusNode: SCNNode {
                 let yaw = atan2f(camera.transform.columns.0.x, camera.transform.columns.1.x)
 
                 isChangingOrientation = true
-                // Rotate the node -90° to be perpendicular to the plan
-                let simdRotation = simd_quatf(angle: -.pi / 2, axis: [1, 0, 0])
                 let simdOrientation = simd_quatf(angle: yaw, axis: [0, 1, 0])
                 SCNTransaction.begin()
-                SCNTransaction.completionBlock = {
-                    self.isChangingOrientation = false
-                    self.isPointingDownwards = true
+                SCNTransaction.completionBlock = { [weak self] in
+                    self?.isChangingOrientation = false
+                    self?.isPointingDownwards = true
                 }
                 SCNTransaction.animationDuration = isPointingDownwards ? 0.0 : 0.5
-                self.simdOrientation = simdOrientation * simdRotation
+                self.simdOrientation = simdOrientation
                 SCNTransaction.commit()
             }
         } else {
             // Update orientation only twice per second to avoid jitter.
-            if counterToNextOrientationUpdate == 30 || isPointingDownwards {
+            if counterToNextOrientationUpdate == 15 || isPointingDownwards {
                 counterToNextOrientationUpdate = 0
                 isPointingDownwards = false
                 
-                // Rotate the node -90° to be perpendicular to the plan
-                let simdRotation = simd_quatf(angle: -.pi / 2, axis: [1, 0, 0])
                 let simdOrientation = raycastResult.worldTransform.orientation
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = 0.5
-                self.simdOrientation = simdOrientation * simdRotation
+                self.simdOrientation = simdOrientation
                 SCNTransaction.commit()
             }
             
@@ -360,9 +424,40 @@ open class FocusNode: SCNNode {
         }
 	}
 
-    /// Hides the focus square.
-    open func hide(animated: Bool) {
-        let duration = animated ? type(of: self).animationDuration : 0.0
+    // MARK: Appearance
+    private func displayStateChanged(_ state: FocusNode.DisplayState, _ previousState: FocusNode.DisplayState) {
+        contentNode?.displayState = state
+        guard state != previousState else { return }
+        if let delegate = delegate as? FocusNodeDelegate {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                delegate.focusNodeChangedDisplayState(self, state: state)
+            }
+        }
+        displayOnTop(true)
+    }
+
+    /// Sets the rendering order of the `node` to show on top or under other scene content.
+    private func displayOnTop(_ isOnTop: Bool) {
+        // Recursivley traverses the node's children to update the rendering order depending on the `isOnTop` parameter.
+        func updateRenderOrder(for node: SCNNode) {
+            node.renderingOrder = isOnTop ? 2 : 0
+
+            for material in node.geometry?.materials ?? [] {
+                material.readsFromDepthBuffer = !isOnTop
+            }
+
+            for child in node.childNodes {
+                updateRenderOrder(for: child)
+            }
+        }
+
+        updateRenderOrder(for: self)
+    }
+
+    /// Hides the focus node.
+    private func hide(animated: Bool) {
+        let duration = animated ? self.animationDuration : 0.0
         guard action(forKey: "hide") == nil else { return }
         removeAction(forKey: "unhide")
         runAction(.fadeOut(duration: duration), forKey: "hide") {
@@ -371,9 +466,9 @@ open class FocusNode: SCNNode {
         }
     }
 
-    /// Unhides the focus square.
-    open func unhide(animated: Bool) {
-        let duration = animated ? type(of: self).animationDuration : 0.0
+    /// Unhides the focus node.
+    private func unhide(animated: Bool) {
+        let duration = animated ? self.animationDuration : 0.0
         guard action(forKey: "unhide") == nil else { return }
         removeAction(forKey: "hide")
         runAction(.fadeIn(duration: duration), forKey: "unhide")
@@ -406,16 +501,17 @@ open class FocusNode: SCNNode {
             return
         }
         if point == nil, !Thread.isMainThread {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 self.updateFocusNode()
             }
             return
         }
-        func updateNode(_ view: ARSCNView, _ point: CGPoint) {
-            // Perform hit testing only when ARKit tracking is in a good state.
+        let screenPoint = point ?? view.screenCenter
+        updateQueue.async { [unowned self] in
             if let camera = view.session.currentFrame?.camera,
                case .normal = camera.trackingState,
-               let result = view.getEstimatedPlanes(from: point)?.first {
+               let result = view.getEstimatedPlanes(from: screenPoint)?.first {
                 self.detectionState = .detecting(raycastResult: result, camera: camera)
                 guard self.parent !== view.scene.rootNode else { return }
                 view.scene.rootNode.addChildNode(self)
@@ -426,102 +522,20 @@ open class FocusNode: SCNNode {
                 view.pointOfView?.addChildNode(self)
             }
         }
-        let screenPoint = point ?? view.screenCenter
-        updateQueue.async {
-            updateNode(view, screenPoint)
-        }
     }
     
-    /// Sets the rendering order of the `node` to show on top or under other scene content.
-    open func displayOnTop(_ isOnTop: Bool) {
-        // Recursivley traverses the node's children to update the rendering order depending on the `isOnTop` parameter.
-        func updateRenderOrder(for node: SCNNode) {
-            node.renderingOrder = isOnTop ? 2 : 0
-
-            for material in node.geometry?.materials ?? [] {
-                material.readsFromDepthBuffer = !isOnTop
-            }
-
-            for child in node.childNodes {
-                updateRenderOrder(for: child)
-            }
-        }
-
-        updateRenderOrder(for: self)
+    required public init(content node: FocusIndicatorNode) {
+        super.init()
+        self.contentNode = node
+        self.initialize()
     }
-
-    // MARK: Appearance
-    /// It is called by the system to allow subclasses to update the appearence of the
-    /// node. A subclass should call `super.displayStateChanged` in order to
-    /// notify the delegate of the change.
-    ///
-    /// - parameters:
-    ///     - state: the display state
-    ///     - newPlane: true when a new plane was detected
-    /// - Returns:
-    ///     FocusNode: A focus node associated with and displayed by the view.
-    ///     The delegate of the focus node is the caller.
-    ///
-    /// Implement this methiod to respond to changes to the world tracking state
-    /// For instance:
-    /// ````
-    /// open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-    /// super.displayStateChanged(state, newPlane: newPlane)
-    ///     switch state {
-    ///     case .initializing, .billboard:
-    ///             animateOffPlaneState()
-    ///         case .offPlane:
-    ///             animateOffPlaneState()
-    ///         case .onPlane:
-    ///             animateOnPlaneState(newPlane: newPlane)
-    ///     }
-    /// }
-    ///````
-    ///  - attention
-    /// `displayStateChanged` should not be called directly.
-    ///
-
-    open func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-        if let delegate = delegate as? FocusNodeDelegate {
-            DispatchQueue.main.async {
-                delegate.focusNodeChangedDisplayState(self)
-            }
-        }
-        displayOnTop(true)
-    }
-
-    // MARK: - Initialization
-    /// Subclasses should override this method to add each node to the hierarchy.
-    ///
-    /// Subnodes are added by calling
-    /// ````
-    /// self.addChildNode(aNode)
-    /// ````
-    ///
-    /// - note
-    /// All subnodes are added to a special node and that subnodes
-    /// are only added to it, never to the focus node itself
-    open func initGeometry() {}
     
     required public override init() {
         super.init()
-        // Dispatching on the main queue leaves time to the
-        // callers to change settings before starting to run
-        DispatchQueue.main.async {
-            self.updateQueue.async {
-                self.initialize()
-            }
-        }
+        self.initialize()
     }
 
     required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        // Dispatching on the main queue leaves time to the
-        // callers to change settings before starting to run
-        DispatchQueue.main.async {
-            self.updateQueue.async {
-                self.initialize()
-            }
-        }
+        fatalError("init(coder:) has not been implemented")
     }
 }

@@ -14,14 +14,6 @@ class FocusSquareViewControllerAR: UIViewController, ARSCNViewDelegate, FocusNod
     
     @IBOutlet var focusNode: FocusNode!
     
-    @IBAction func showFocusNode(_ sender: Any) {
-        focusNode.isHidden = false
-    }
-    
-    @IBAction func hideFocusNode(_ sender: Any) {
-        focusNode.isHidden = true
-    }
-
     /// A serial queue used to coordinate adding or removing nodes from the scene.
     lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
 
@@ -47,11 +39,8 @@ class FocusSquareViewControllerAR: UIViewController, ARSCNViewDelegate, FocusNod
         focusNode.updateFocusNode()
     }
 
-    func focusNodeChangedDisplayState(_ node: FocusNode) {
-        print("Node: ")
-        print(node)
-        print(" changed state to: ")
-        print("\(String(describing: focusNode?.displayState))")
+    func focusNodeChangedDisplayState(_ node: FocusNode, state: FocusNode.DisplayState) {
+        // Do something
     }
 }
 

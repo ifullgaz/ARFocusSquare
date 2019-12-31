@@ -163,12 +163,14 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HsS-eP-YAO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <customObject id="clg-L5-ygf" customClass="FocusArc" customModule="ARFocusSquare">
+                <customObject id="clg-L5-ygf" customClass="FocusNode" customModule="ARFocusSquare">
                     <connections>
+                        <outlet property="contentNode" destination="WNd-3l-ci0" id="duL-83-MDU"/>
                         <outlet property="delegate" destination="2MR-zj-LlM" id="90M-Cw-6JP"/>
                         <outlet property="sceneView" destination="jdS-nA-aP7" id="asg-92-11x"/>
                     </connections>
                 </customObject>
+                <customObject id="WNd-3l-ci0" customClass="FocusArc" customModule="ARFocusSquare"/>
             </objects>
             <point key="canvasLocation" x="3737" y="-406"/>
         </scene>
@@ -225,12 +227,14 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Tf-Fm-1Lv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <customObject id="AFm-t0-VF0" customClass="FocusSquare" customModule="ARFocusSquare">
+                <customObject id="AFm-t0-VF0" customClass="FocusNode" customModule="ARFocusSquare">
                     <connections>
+                        <outlet property="contentNode" destination="jed-Wi-fZc" id="kqS-wR-e3J"/>
                         <outlet property="delegate" destination="sVw-9j-ieY" id="E0b-vn-GQK"/>
                         <outlet property="sceneView" destination="B9G-Pa-oUY" id="WoB-OO-cfe"/>
                     </connections>
                 </customObject>
+                <customObject id="jed-Wi-fZc" customClass="FocusSquare" customModule="ARFocusSquare"/>
             </objects>
             <point key="canvasLocation" x="3738" y="424"/>
         </scene>
@@ -287,12 +291,14 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="223-CQ-FuY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <customObject id="iQU-N9-Vp7" customClass="FocusPod" customModule="ARFocusSquare_Example" customModuleProvider="target">
+                <customObject id="iQU-N9-Vp7" customClass="FocusNode" customModule="ARFocusSquare">
                     <connections>
+                        <outlet property="contentNode" destination="0aK-Ah-1uc" id="BZo-Al-NtV"/>
                         <outlet property="delegate" destination="jhI-Dj-dPT" id="3R3-Sr-lqD"/>
                         <outlet property="sceneView" destination="0iS-q7-D93" id="wc7-b6-Fuy"/>
                     </connections>
                 </customObject>
+                <customObject id="0aK-Ah-1uc" customClass="FocusPod" customModule="ARFocusSquare_Example" customModuleProvider="target"/>
             </objects>
             <point key="canvasLocation" x="3737" y="1268"/>
         </scene>

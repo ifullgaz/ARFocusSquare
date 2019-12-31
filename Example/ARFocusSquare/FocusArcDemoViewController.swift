@@ -13,23 +13,27 @@ class FocusArcDemoViewController: UIViewController {
 
     @IBOutlet weak var sceneView: SCNView!
 
-    var focusNode: FocusNode?
+    var focusNode: FocusNode!
+    var visualFocusNode: FocusIndicatorNode!
+    var newPlane: Bool = false
     
     var displayState: FocusNode.DisplayState = .offPlane
-    var newPlane: Bool = false
     
     lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
 
     @IBAction func viewTapped(_ sender: Any) {
         switch displayState {
+            case .billboard:
+                displayState = .offPlane
             case .offPlane:
                 newPlane = !newPlane
-                displayState = .onPlane(newPlane: newPlane)
-                focusNode?.displayStateChanged(displayState, newPlane: newPlane)
+                displayState = newPlane ? .onPlane : .onNewPlane
+            case .onNewPlane, .onPlane:
+                displayState = .billboard
             default:
-                displayState = .offPlane
-                focusNode?.displayStateChanged(displayState)
+                displayState = .billboard
         }
+        visualFocusNode.displayState = displayState
     }
     
     override func viewDidLoad() {
@@ -43,10 +47,11 @@ class FocusArcDemoViewController: UIViewController {
         let camera = SCNCamera()
         camera.zNear = 0.1
         cameraNode.camera = camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 1)
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 0.8)
         scene.rootNode.addChildNode(cameraNode)
         
-        focusNode = FocusArc()
+        visualFocusNode = FocusArc()
+        focusNode = FocusNode(content: visualFocusNode!)
         focusNode!.updateQueue = updateQueue
         scene.rootNode.addChildNode(self.focusNode!)
     }

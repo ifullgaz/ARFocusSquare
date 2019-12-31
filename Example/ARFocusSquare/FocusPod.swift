@@ -6,7 +6,7 @@
 //  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
-import ARKit
+import SceneKit
 import ARFocusSquare
 
 private func pulseAction() -> SCNAction {
@@ -30,36 +30,15 @@ private func flashAnimation(duration: TimeInterval) -> SCNAction {
     return action
 }
 
-private func scaleAnimation(for keyPath: String) -> CAKeyframeAnimation {
-    let scaleAnimation = CAKeyframeAnimation(keyPath: keyPath)
+class FocusPod: SCNNode, FocusIndicatorNode {
 
-    let easeOut = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
-    let easeInOut = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-    let linear = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+    // MARK: - Configuration Properties
 
-    let size = FocusPod.size
-    let ts = FocusPod.size * FocusPod.scaleForOnPlane
-    let values = [size, size * 1.15, size * 1.15, ts * 0.97, ts]
-    let keyTimes: [NSNumber] = [0.00, 0.25, 0.50, 0.75, 1.00]
-    let timingFunctions = [easeOut, linear, easeOut, easeInOut]
-
-    scaleAnimation.values = values
-    scaleAnimation.keyTimes = keyTimes
-    scaleAnimation.timingFunctions = timingFunctions
-    scaleAnimation.duration = FocusPod.animationDuration
-
-    return scaleAnimation
-}
-
-class FocusPod: FocusNode {
     /// Original size of the focus square in meters.
-    static let size: Float = 0.4
+    public static let size: Float = 0.4
 
     /// Scale factor for the focus square when it is closed, w.r.t. the original size.
     static let scaleForOnPlane: Float = 0.8
-
-    /// Duration of the open/close animation
-    override open class var animationDuration: TimeInterval { 0.7 }
 
     static var baseColor = #colorLiteral(red: 0.3098039329, green: 0.2039215714, blue: 0.03921568766, alpha: 1)
 
@@ -69,6 +48,11 @@ class FocusPod: FocusNode {
 
     private var pyramid = SCNNode()
     
+    static var animationDuration: TimeInterval = 0.7
+
+    /// The queue on which all operations are done
+    private var updateQueue: DispatchQueue!
+    
     /// Indicates whether the segments of the focus square are disconnected.
     private var isOpen = false
 
@@ -76,7 +60,7 @@ class FocusPod: FocusNode {
     private var isAnimating = false
     
     private func keyFrameBasedScaleAnimation(duration: TimeInterval) -> SCNAction {
-        let size = displaySize * displayScale
+        let size = FocusPod.size
         let ts = size * FocusPod.scaleForOnPlane
 
         let scaleAnimationStage1 = SCNAction.scale(
@@ -113,16 +97,17 @@ class FocusPod: FocusNode {
         isAnimating = true
 
         // Open animation
-        let duration: TimeInterval = FocusSquare.animationDuration / 4
+        let duration: TimeInterval = FocusPod.animationDuration / 4
         let opacityAnimation = SCNAction.fadeIn(duration: duration)
         opacityAnimation.timingMode = .easeOut
-        let scaleAnimation = SCNAction.scale(to: CGFloat(displaySize * displayScale), duration: duration)
+        let scaleAnimation = SCNAction.scale(to: CGFloat(FocusPod.size), duration: duration)
         scaleAnimation.timingMode = .easeOut
         let actions = SCNAction.group([opacityAnimation, scaleAnimation])
         self.runAction(actions) {
-            self.runAction(pulseAction(), forKey: "pulse")
-            // This is a safe operation because `SCNTransaction`'s completion block is called back on the main thread.
-            self.isAnimating = false
+            self.updateQueue.async {
+                self.runAction(pulseAction(), forKey: "pulse")
+                self.isAnimating = false
+            }
         }
     }
     
@@ -134,7 +119,7 @@ class FocusPod: FocusNode {
         self.removeAction(forKey: "pulse")
         self.opacity = 1.0
 
-        let duration: TimeInterval = FocusArc.animationDuration
+        let duration: TimeInterval = FocusPod.animationDuration
 
         let opacityAnimation = SCNAction.fadeOpacity(to: 0.99, duration: duration / 2.0)
         opacityAnimation.timingMode = .easeOut
@@ -143,7 +128,9 @@ class FocusPod: FocusNode {
         // Opacity and scale animations will run concurrently
         let actions = SCNAction.group([scalingAnimation, opacityAnimation])
         self.runAction(actions) {
-            self.isAnimating = false
+            self.updateQueue.async {
+                self.isAnimating = false
+            }
         }
     }
     
@@ -157,21 +144,24 @@ class FocusPod: FocusNode {
     }
     
     // MARK: Appearance
-    open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-        super.displayStateChanged(state, newPlane: newPlane)
-        switch state {
-            case .initializing, .billboard:
-                animateOffPlaneState()
-            case .offPlane:
-                animateOffPlaneState()
-            case .onPlane:
-                animateOnPlaneState(newPlane: newPlane)
+    open var displayState: FocusNode.DisplayState = .initializing {
+        didSet {
+            switch displayState {
+                case .initializing, .billboard:
+                    animateOffPlaneState()
+                case .offPlane:
+                    animateOffPlaneState()
+                case .onNewPlane:
+                    animateOnPlaneState(newPlane: true)
+                case .onPlane:
+                    animateOnPlaneState(newPlane: false)
+            }
         }
     }
 
     // MARK: - Initialization
-    open override func initGeometry() {
-        super.initGeometry()
+    open func setupGeometry(updateQueue: DispatchQueue) {
+        self.updateQueue = updateQueue
         let geometry = SCNPyramid(width: CGFloat(FocusPod.size),
                                   height: CGFloat(FocusPod.size) * 0.707,
                                   length: CGFloat(FocusPod.size))
@@ -187,6 +177,5 @@ class FocusPod: FocusNode {
         pyramid.pivot = SCNMatrix4MakeTranslation(0.0, -FocusPod.size * 0.707 / 2.0, 0.0)
         pyramid.eulerAngles.x = .pi / 2
         self.addChildNode(pyramid)
-        displaySize = FocusPod.size * FocusPod.scaleForOnPlane
     }
 }

@@ -6,15 +6,16 @@
 //  See LICENSE for details
 //
 
-import ARKit
-import QuartzCore
+import SceneKit
 
 /// A simple example subclass of FocusNode which shows whether the plane is
 /// tracking on a known surface or estimating.
-open class FocusPlane: FocusNode {
+open class FocusPlane: SCNNode, FocusIndicatorNode {
+
+    // MARK: - Configuration Properties
 
     /// Original size of the focus square in meters.
-    static let size: Float = 0.17
+    public static let size: Float = 0.17
 
     /// Thickness of the focus square lines in meters.
     static let thickness: Float = 0.018
@@ -42,22 +43,21 @@ open class FocusPlane: FocusNode {
     }()
 
     // MARK: Appearance
-    open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-        super.displayStateChanged(state, newPlane: newPlane)
-        switch state {
-            case .initializing, .billboard, .offPlane:
-                self.fillPlane.geometry?.firstMaterial?.diffuse.contents = FocusPlane.offColor
-                self.fillPlane.geometry?.firstMaterial?.emission.contents = FocusPlane.offColor
-            case .onPlane:
-                self.fillPlane.geometry?.firstMaterial?.diffuse.contents = FocusPlane.onColor
-                self.fillPlane.geometry?.firstMaterial?.emission.contents = FocusPlane.onColor
+    open var displayState: FocusNode.DisplayState = .initializing {
+        didSet {
+            switch displayState {
+                case .initializing, .billboard, .offPlane:
+                    self.fillPlane.geometry?.firstMaterial?.diffuse.contents = FocusPlane.offColor
+                    self.fillPlane.geometry?.firstMaterial?.emission.contents = FocusPlane.offColor
+                case .onPlane, .onNewPlane:
+                    self.fillPlane.geometry?.firstMaterial?.diffuse.contents = FocusPlane.onColor
+                    self.fillPlane.geometry?.firstMaterial?.emission.contents = FocusPlane.onColor
+            }
         }
     }
 
     // MARK: - Initialization
-    open override func initGeometry() {
-        super.initGeometry()
+    open func setupGeometry(updateQueue: DispatchQueue) {
         self.addChildNode(fillPlane)
-        displaySize = FocusPlane.size
     }
 }

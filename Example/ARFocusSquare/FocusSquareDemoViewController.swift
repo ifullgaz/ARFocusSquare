@@ -13,10 +13,11 @@ class FocusSquareDemoViewController: UIViewController {
 
     @IBOutlet weak var sceneView: SCNView!
 
-    var focusNode: FocusNode?
-    
-    var displayState: FocusNode.DisplayState = .offPlane
+    var focusNode: FocusNode!
+    var visualFocusNode: FocusIndicatorNode!
     var newPlane: Bool = false
+
+    var displayState: FocusNode.DisplayState = .offPlane
 
     lazy var updateQueue = DispatchQueue(label: "org.cocoapods.demo.ARFocusSquare-Example")
 
@@ -24,12 +25,13 @@ class FocusSquareDemoViewController: UIViewController {
         switch displayState {
             case .offPlane:
                 newPlane = !newPlane
-                displayState = .onPlane(newPlane: newPlane)
-                focusNode?.displayStateChanged(displayState, newPlane: newPlane)
+                displayState = newPlane ? .onPlane : .onNewPlane
+            case .onNewPlane, .onPlane:
+                displayState = .offPlane
             default:
                 displayState = .offPlane
-                focusNode?.displayStateChanged(displayState)
         }
+        visualFocusNode.displayState = displayState
     }
     
     override func viewDidLoad() {
@@ -43,35 +45,12 @@ class FocusSquareDemoViewController: UIViewController {
         let camera = SCNCamera()
         camera.zNear = 0.1
         cameraNode.camera = camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 1)
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 0.8)
         scene.rootNode.addChildNode(cameraNode)
         
-        focusNode = FocusSquare()
-        focusNode?.updateQueue = updateQueue
-        scene.rootNode.addChildNode(focusNode!)
-    }
-    
-    
-    @IBAction func show(_ sender: Any) {
-        focusNode!.set(hidden: false, animated: true)
-    }
-    
-    @IBAction func hide(_ sender: Any) {
-        focusNode!.set(hidden: true, animated: true)
-    }
-    
-    @IBAction func crazy(_ sender: Any) {
-        let wasHidden: Bool = focusNode!.isHidden
-        focusNode!.isHidden = true
-        focusNode!.set(hidden: true, animated: true)
-        focusNode!.set(hidden: false, animated: true)
-        focusNode!.isHidden = true
-        focusNode!.isHidden = false
-        focusNode!.set(hidden: false, animated: true)
-        focusNode!.set(hidden: true, animated: true)
-        focusNode!.isHidden = true
-
-        focusNode!.isHidden = !wasHidden
-        focusNode!.set(hidden: !wasHidden, animated: true)
+        visualFocusNode = FocusSquare()
+        focusNode = FocusNode(content: visualFocusNode)
+        focusNode.updateQueue = updateQueue
+        scene.rootNode.addChildNode(self.focusNode)
     }
 }

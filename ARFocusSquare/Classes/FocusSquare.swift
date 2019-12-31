@@ -6,7 +6,7 @@
 //  See LICENSE for details
 //
 
-import ARKit
+import SceneKit
 
 // MARK: - Animations and Actions
 
@@ -201,27 +201,28 @@ private extension FocusSquare {
 ///
 /// An `SCNNode` which is used to provide uses with visual cues about the status of ARKit world tracking.
 /// - Tag: FocusSquare
-open class FocusSquare: FocusNode {
+open class FocusSquare: SCNNode, FocusIndicatorNode {
+    // MARK: - Configuration Properties
 
-	// MARK: - Configuration Properties
-
-	/// Original size of the focus square in meters.
-	static let size: Float = 0.17
+    /// Original size of the focus square in meters.
+    public static let size: Float = 0.17
 
 	/// Scale factor for the focus square when it is closed, w.r.t. the original size.
 	static let scaleForClosedSquare: Float = 0.97
-
-	/// Duration of the open/close animation
-    override open class var animationDuration: TimeInterval { 0.7 }
 
 	static var primaryColor = #colorLiteral(red: 1, green: 0.8, blue: 0, alpha: 1)
 
 	/// Color of the focus square fill.
 	static var fillColor = #colorLiteral(red: 1, green: 0.9254901961, blue: 0.4117647059, alpha: 1)
 
+    /// The queue on which all operations are done
+    private var updateQueue: DispatchQueue!
+    
 	/// Indicates whether the segments of the focus square are disconnected.
 	private var isOpen = false
 
+    static var animationDuration: TimeInterval = 0.7
+    
     /// Indicates if the square is currently being animated for opening or closing.
     private var isAnimating = false
     
@@ -248,7 +249,7 @@ open class FocusSquare: FocusNode {
     }()
 
     private func keyFrameBasedScaleAnimation(duration: TimeInterval) -> SCNAction {
-        let size = displaySize * displayScale
+        let size = FocusSquare.size
         let ts = size * FocusSquare.scaleForClosedSquare
 
         let scaleAnimationStage1 = SCNAction.scale(
@@ -288,13 +289,14 @@ open class FocusSquare: FocusNode {
         let duration: TimeInterval = FocusSquare.animationDuration / 4
         let opacityAnimation = SCNAction.fadeIn(duration: duration)
         opacityAnimation.timingMode = .easeOut
-        let scaleAnimation = SCNAction.scale(to: CGFloat(displaySize * displayScale), duration: duration)
+        let scaleAnimation = SCNAction.scale(to: CGFloat(FocusSquare.size), duration: duration)
         scaleAnimation.timingMode = .easeOut
         let actions = SCNAction.group([opacityAnimation, scaleAnimation])
         self.runAction(actions) {
-            self.runAction(pulseAction(), forKey: "pulse")
-            // This is a safe operation because `SCNTransaction`'s completion block is called back on the main thread.
-            self.isAnimating = false
+            self.updateQueue.async {
+                self.runAction(pulseAction(), forKey: "pulse")
+                self.isAnimating = false
+            }
         }
 		for segment in segments {
             segment.open(duration: duration)
@@ -309,7 +311,7 @@ open class FocusSquare: FocusNode {
         self.removeAction(forKey: "pulse")
         self.opacity = 1.0
 
-        let duration: TimeInterval = FocusArc.animationDuration
+        let duration: TimeInterval = FocusSquare.animationDuration
 
         let opacityAnimation = SCNAction.fadeOpacity(to: 0.99, duration: duration / 2.0)
         opacityAnimation.timingMode = .easeOut
@@ -318,7 +320,9 @@ open class FocusSquare: FocusNode {
         // Opacity and scale animations will run concurrently
         let actions = SCNAction.group([scalingAnimation, opacityAnimation])
         self.runAction(actions) {
-            self.isAnimating = false
+            self.updateQueue.async {
+                self.isAnimating = false
+            }
         }
 
         // Wait for a bit then animate the segments
@@ -343,21 +347,23 @@ open class FocusSquare: FocusNode {
 	}
     
     // MARK: Appearance
-    open override func displayStateChanged(_ state: FocusNode.DisplayState, newPlane: Bool = false) {
-        super.displayStateChanged(state, newPlane: newPlane)
-        switch state {
-            case .initializing, .billboard:
-                animateOffPlaneState()
-            case .offPlane:
-                animateOffPlaneState()
-            case .onPlane:
-                animateOnPlaneState(newPlane: newPlane)
+    open var displayState: FocusNode.DisplayState = .initializing {
+        didSet {
+            switch displayState {
+                case .initializing, .billboard:
+                    animateOffPlaneState()
+                case .offPlane:
+                    animateOffPlaneState()
+                case .onNewPlane:
+                    animateOnPlaneState(newPlane: true)
+                case .onPlane:
+                    animateOnPlaneState(newPlane: false)
+            }
         }
     }
 
     // MARK: - Initialization
-    open override func initGeometry() {
-        super.initGeometry()
+    open func setupGeometry(updateQueue: DispatchQueue) {
         /*
          The focus square consists of eight segments as follows, which can be individually animated.
          
@@ -369,6 +375,7 @@ open class FocusSquare: FocusNode {
              -   -
              s7  s8
          */
+        self.updateQueue = updateQueue
         let s1 = Segment(name: "s1", corner: .topLeft, alignment: .horizontal)
         let s2 = Segment(name: "s2", corner: .topRight, alignment: .horizontal)
         let s3 = Segment(name: "s3", corner: .topLeft, alignment: .vertical)
@@ -385,6 +392,5 @@ open class FocusSquare: FocusNode {
         }
         self.isOpen = true
         self.addChildNode(fillPlane)
-        self.displaySize = FocusSquare.size * FocusSquare.scaleForClosedSquare
     }
 }
